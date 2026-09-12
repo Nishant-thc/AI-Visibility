@@ -2239,6 +2239,10 @@ export default function Home() {
 
         </div>
       </main>
+
+      <footer style={{ textAlign: 'center', padding: '40px 20px', fontSize: '13px', color: 'var(--ink-soft)', borderTop: '1px solid var(--line)', marginTop: '40px' }}>
+        Built by <a href="https://thehubcontent.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--ink)', fontWeight: 600, textDecoration: 'none', borderBottom: '1px solid var(--ink)' }}>The Hub Content</a>
+      </footer>
     </div>
   );
 }
