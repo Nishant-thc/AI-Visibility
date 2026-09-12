@@ -52,8 +52,11 @@
   background: var(--bg);
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 24px;
+  padding: 32px;
   transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .card:hover {
@@ -63,20 +66,55 @@
 }
 
 .term {
-  font-size: 20px;
+  font-family: var(--font-serif);
+  font-size: 26px;
   font-weight: 600;
   color: var(--ink);
-  margin-bottom: 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  margin-bottom: 4px;
 }
 
-.definition {
-  font-size: 14px;
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sectionLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+}
+
+.sectionText {
+  font-size: 15px;
   color: var(--ink-soft);
   line-height: 1.6;
   margin: 0;
+}
+
+.highlight {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.baseline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(34, 197, 94, 0.05);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 8px;
+  color: #4ADE80;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: auto;
 }
 
 .footer {
