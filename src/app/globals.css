@@ -1,0 +1,95 @@
+/* ==================== THC AI VISIBILITY SCORE - EDITORIAL THEME ==================== */
+:root {
+  --bg: #F3F4F7;
+  --paper: #FFFFFF;
+  --ink: #14171C;
+  --ink-soft: #565E6D;
+  --ink-faint: #8A909C;
+  --line: #DEE1E7;
+  
+  --rail: #14171C;
+  --rail-text: #A9AFBC;
+  --rail-text-active: #FFFFFF;
+  
+  --visible: #1348E4;
+  --visible-bg: #EAEFFD;
+  --warn: #A9720C;
+  --warn-bg: #FBF1DD;
+  --block: #A6342A;
+  --block-bg: #FBEAE8;
+  --neutral: #6B7280;
+
+  --font-serif: var(--font-fraunces, 'Fraunces', Georgia, serif);
+  --font-sans: var(--font-ibm-sans, 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif);
+  --font-mono: var(--font-ibm-mono, 'IBM Plex Mono', monospace);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Print Rules */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 10mm;
+  }
+  body {
+    background: #FFFFFF !important;
+    color: #14171C !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

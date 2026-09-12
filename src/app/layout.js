@@ -1,0 +1,43 @@
+import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
+import './globals.css';
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+  display: 'swap',
+  axes: ['opsz'],
+  weights: ['400', '500', '600']
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  subsets: ['latin'],
+  variable: '--font-ibm-sans',
+  display: 'swap',
+  weight: ['400', '500', '600']
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  variable: '--font-ibm-mono',
+  display: 'swap',
+  weight: ['400', '500']
+});
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1
+};
+
+export const metadata = {
+  title: 'THC Ai Visibility Score — Diagnostic Instrument for SEO & Content Strategists',
+  description: 'Verifiable, real-time diagnostic instrument measuring whether AI systems (LLM crawlers, answer engines, AI Overviews, Perplexity) can access, parse, understand, and cite your website.',
+  robots: 'index, follow'
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" className={`${fraunces.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`} suppressHydrationWarning>
+      <body suppressHydrationWarning>{children}</body>
+    </html>
+  );
+}
