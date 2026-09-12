@@ -30,9 +30,13 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: 'THC Ai Visibility Score — Diagnostic Instrument for SEO & Content Strategists',
-  description: 'Verifiable, real-time diagnostic instrument measuring whether AI systems (LLM crawlers, answer engines, AI Overviews, Perplexity) can access, parse, understand, and cite your website.',
-  robots: 'index, follow'
+  title: 'Free AI Visibility Checker 2026 | Audit 80+ Metrics | The Hub Content',
+  description: 'Run real-time diagnostic audits across 80+ metrics with the AI Visibility Checker by The Hub Content. See if LLMs can crawl and cite your website.',
+  robots: 'index, follow',
+  metadataBase: new URL('https://ai-visibility.thehubcontent.com'),
+  alternates: {
+    canonical: '/'
+  }
 };
 
 export default function RootLayout({ children }) {
@@ -51,6 +55,29 @@ export default function RootLayout({ children }) {
             gtag('config', 'G-6N606L7Z6K', {
               page_path: window.location.pathname,
             });
+          `}
+        </Script>
+        <Script id="schema-org" type="application/ld+json" strategy="afterInteractive">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "AI Visibility Checker",
+              "url": "https://ai-visibility.thehubcontent.com",
+              "description": "The ultimate AI Visibility Checker by The Hub Content. Run real-time diagnostic audits across 80+ metrics.",
+              "applicationCategory": "SEO Tool",
+              "operatingSystem": "All",
+              "publisher": {
+                "@type": "Organization",
+                "name": "The Hub Content",
+                "url": "https://thehubcontent.com"
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              }
+            }
           `}
         </Script>
       </head>

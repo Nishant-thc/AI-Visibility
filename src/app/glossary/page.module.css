@@ -125,3 +125,86 @@
   border-top: 1px solid var(--line);
   margin-top: 60px;
 }
+
+/* A-Z Jump Navigation */
+.azNav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 50px;
+  padding: 20px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.azLetter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--visible);
+  background: var(--visible-bg);
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.azLetter:hover {
+  background: var(--visible);
+  color: #fff;
+}
+
+.azLetterDisabled {
+  color: var(--ink-faint);
+  background: transparent;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Glossary Content Layout */
+.glossaryContent {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+.letterSection {
+  scroll-margin-top: 100px;
+}
+
+.letterHeading {
+  font-family: var(--font-serif);
+  font-size: 42px;
+  color: var(--ink);
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 8px;
+  display: inline-block;
+}
+
+.termList {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+}
+
+.categoryBadge {
+  display: inline-flex;
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  text-transform: uppercase;
+  margin-top: -12px;
+  margin-bottom: 8px;
+  width: fit-content;
+}

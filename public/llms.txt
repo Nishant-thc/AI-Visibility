@@ -1,0 +1,19 @@
+# AI Visibility Checker
+> The ultimate diagnostic instrument measuring whether AI systems can access, parse, understand, and cite your website.
+
+## About
+AI Visibility Checker is a tool by The Hub Content that audits your website against 80+ metrics tailored for Answer Engine Optimization (AEO). As LLMs and Answer Engines (like ChatGPT Search, Perplexity, and Google AI Overviews) increasingly replace traditional search engines, ensuring your brand's AI Visibility is critical.
+
+## Features
+- **Real-time Diagnostic Auditing**: Scans your domain using modern headless scraping infrastructure.
+- **80+ Core Metrics Checked**: From technical latency and paywall schemas to Flesch readability and @id Knowledge Graph mapping.
+- **Crawler Access Control Verification**: Differentiates between model training bots (GPTBot) and live-citation bots (OAI-SearchBot) to protect IP while enabling visibility.
+- **Actionable Reporting**: Provides Markdown and CSV dossier exports with concrete recommendations.
+
+## Contact & Organization
+- **Publisher**: The Hub Content
+- **Homepage**: https://ai-visibility.thehubcontent.com
+- **Main Organization**: https://thehubcontent.com
+
+## Usage
+Submit any public URL to our live scanner to receive an instant compliance report graded across Crawler Access, Structured Data, Content Extractability, and Technical Performance.

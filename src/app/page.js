@@ -656,7 +656,7 @@ function LandingPage({ onScan, scanning, scanStep, setView }) {
       desc: 'Triggered live when an end user inputs a URL into ChatGPT prompt. Bypasses training opt-outs.',
       risk: 'User Link Fetch Failure',
       rule: 'User-agent: ChatGPT-User',
-      pos: { top: '35%', left: '80%' }
+      pos: { top: '35%', left: '68%' }
     },
     {
       name: 'GPTBot',
@@ -665,7 +665,7 @@ function LandingPage({ onScan, scanning, scanStep, setView }) {
       desc: 'Scrapes web content to train future OpenAI foundation models. Blocking does NOT stop ChatGPT live web citations.',
       risk: 'Excluded from LLM Pre-training',
       rule: 'User-agent: GPTBot',
-      pos: { top: '75%', left: '72%' }
+      pos: { top: '75%', left: '68%' }
     },
     {
       name: 'Claude-SearchBot',
@@ -683,7 +683,7 @@ function LandingPage({ onScan, scanning, scanStep, setView }) {
       desc: 'Crawls pages to render inline numbered citations in Perplexity AI search results.',
       risk: 'Perplexity Citation Loss',
       rule: 'User-agent: PerplexityBot',
-      pos: { top: '65%', left: '15%' }
+      pos: { top: '65%', left: '22%' }
     },
     {
       name: 'Google-Extended',
@@ -692,7 +692,7 @@ function LandingPage({ onScan, scanning, scanStep, setView }) {
       desc: 'Control token to prevent content from training Google Gemini models while keeping Google Search indexing active.',
       risk: 'Opt-out from Gemini Training',
       rule: 'User-agent: Google-Extended',
-      pos: { top: '28%', left: '18%' }
+      pos: { top: '28%', left: '24%' }
     }
   ];
 
@@ -779,25 +779,6 @@ function LandingPage({ onScan, scanning, scanStep, setView }) {
 
   return (
     <div className={styles.landingWrap}>
-      {/* Top Header */}
-      <header className={styles.landingHeader}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div
-            className={styles.logoText}
-            onClick={() => setView('landing')}
-          >
-            AI Visibility
-          </div>
-        </div>
-        <nav className={styles.landingNavLinks}>
-          <a href="#what-is" className={styles.landingNavLink}>What is AI Visibility?</a>
-          <a href="#who-for" className={styles.landingNavLink}>Who is it for?</a>
-          <a href="#radar" className={styles.landingNavLink}>Bot Radar</a>
-          <a href="#matrix" className={styles.landingNavLink}>Audit Matrix</a>
-          <a href="/glossary" className={styles.landingNavLink}>Glossary</a>
-        </nav>
-      </header>
-
       <div className={styles.landingInner}>
         {/* Badge */}
         <div className={styles.landingBadge}>
@@ -867,7 +848,7 @@ function LandingPage({ onScan, scanning, scanStep, setView }) {
 
         {/* Trust bar */}
         <div className={styles.landingTrustBar}>
-          <span className={styles.landingTrustItem}>✓ 89 checks run per audit</span>
+          <span className={styles.landingTrustItem}>✓ 80+ metrics checked per audit</span>
           <span className={styles.landingTrustItem}>✓ Rules Reference v1.0</span>
           <span className={styles.landingTrustItem}>✓ RFC 9309 verified</span>
           <span className={styles.landingTrustItem}>✓ Google Search Central</span>
@@ -958,57 +939,6 @@ function LandingPage({ onScan, scanning, scanStep, setView }) {
         </div>
       </section>
 
-      {/* ================= 3. BOT RADAR & SPIDERS SIMULATOR ================= */}
-      <section className={styles.landingSection} id="radar">
-        <div className={styles.landingSectionHeader}>
-          <span className={styles.landingSectionTag}>Interactive Visual Simulator</span>
-          <h2 className={styles.landingSectionTitle}>AI Crawlers &amp; Spiders Radar</h2>
-          <p className={styles.landingSectionDesc}>
-            Click any AI crawler node to inspect its operator, user-agent string, citation role, and robots.txt disallow impact.
-          </p>
-        </div>
-
-        <div className={styles.botRadarWrap}>
-          <div className={styles.botRadarStage}>
-            <div className={styles.botCenterNode}>
-              Target<br />Website
-            </div>
-            {botList.map(b => (
-              <div
-                key={b.name}
-                className={`${styles.botOrbitNode} ${selectedBot === b.name ? styles.botOrbitNodeActive : ''}`}
-                style={b.pos}
-                onClick={() => setSelectedBot(b.name)}
-              >
-                <span>🤖</span> {b.name}
-              </div>
-            ))}
-          </div>
-
-          <div className={styles.botSpecCard}>
-            <div className={styles.botSpecName}>{currentBotData.name}</div>
-            <div className={styles.botSpecOp}>Operator: {currentBotData.op}</div>
-            <div className={styles.botSpecRow}>
-              <div className={styles.botSpecLabel}>Crawler Role</div>
-              <div className={styles.botSpecVal}>{currentBotData.role}</div>
-            </div>
-            <div className={styles.botSpecRow}>
-              <div className={styles.botSpecLabel}>Description &amp; Impact</div>
-              <div className={styles.botSpecVal}>{currentBotData.desc}</div>
-            </div>
-            <div className={styles.botSpecRow}>
-              <div className={styles.botSpecLabel}>Disallow Risk</div>
-              <div className={styles.botSpecVal} style={{ color: '#F87171', fontWeight: 600 }}>{currentBotData.risk}</div>
-            </div>
-            <div className={styles.botSpecRow}>
-              <div className={styles.botSpecLabel}>Robots.txt Rule Pattern</div>
-              <code style={{ fontSize: '11px', background: 'rgba(0,0,0,0.4)', padding: '4px 8px', borderRadius: '4px', color: '#60A5FA', display: 'block', marginTop: '4px' }}>
-                {currentBotData.rule}
-              </code>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ================= 4. COMPREHENSIVE AUDIT MATRIX ================= */}
       <section className={styles.landingSection} id="matrix">
@@ -1121,6 +1051,23 @@ export default function Home() {
   const [checklistFilter, setChecklistFilter] = useState('all');
   const [mobileRailOpen, setMobileRailOpen] = useState(false);
 
+  // Analytics Helpers
+  const handleViewChange = (newView) => {
+    setView(newView);
+    if (typeof window !== 'undefined' && window.gtag) {
+      const path = newView === 'landing' ? '/' : '/console';
+      window.history.pushState(null, '', path);
+      window.gtag('config', 'G-6N606L7Z6K', { page_path: path });
+    }
+  };
+
+  const handleNavChange = (navId) => {
+    setActiveNav(navId);
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'view_report_tab', { tab_name: navId });
+    }
+  };
+
   // Competitor comparison state
   const [competitors, setCompetitors] = useState(['']);
   const [compareResults, setCompareResults] = useState([]);
@@ -1157,9 +1104,15 @@ export default function Home() {
 
       setUrl(inputUrl);
       setResult(data);
-      setView('console');
-      setActiveNav('overview');
+      handleViewChange('console');
+      handleNavChange('overview');
       setShowSetup(false);
+
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'audit_run', {
+          'target_domain': inputUrl
+        });
+      }
     } catch (err) {
       console.error(err);
       setError(err.message || 'Audit failed. Verify domain accessibility.');
@@ -1223,22 +1176,38 @@ export default function Home() {
     }
   };
 
-  /* ── Landing page view ─────────────────────────────────────────────── */
-  if (view === 'landing') {
-    return (
-      <LandingPage
-        onScan={handleScan}
-        scanning={scanning}
-        scanStep={scanStep}
-        setView={setView}
-      />
-    );
-  }
-
-  /* ── Audit console view ────────────────────────────────────────────── */
   const domain = result?.domain?.replace(/^https?:\/\//, '') || url.replace(/^https?:\/\//, '') || 'unknown';
 
   return (
+    <div className={styles.appWrapper}>
+      <div style={{ position: 'sticky', top: 0, zIndex: 100, background: '#0D1117', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+        <header className={styles.landingHeader}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div
+              className={styles.logoText}
+              onClick={() => handleViewChange('landing')}
+              style={{ cursor: 'pointer' }}
+            >
+              AI Visibility
+            </div>
+          </div>
+          <nav className={styles.landingNavLinks}>
+            <a href="/#what-is" className={styles.landingNavLink}>What is AI Visibility?</a>
+            <a href="/#who-for" className={styles.landingNavLink}>Who is it for?</a>
+            <a href="/#matrix" className={styles.landingNavLink}>Audit Matrix</a>
+            <a href="/glossary" className={styles.landingNavLink}>Glossary</a>
+          </nav>
+        </header>
+      </div>
+      
+      {view === 'landing' ? (
+        <LandingPage
+          onScan={handleScan}
+          scanning={scanning}
+          scanStep={scanStep}
+          setView={handleViewChange}
+        />
+      ) : (
     <div className={styles.app}>
       {/* Mobile Drawer Backdrop */}
       <div
@@ -1248,7 +1217,7 @@ export default function Home() {
 
       {/* ============ LEFT RAIL ============ */}
       <aside className={`${styles.rail} ${mobileRailOpen ? styles.railOpen : ''}`}>
-        <div className={styles.railBrand} onClick={() => { setView('landing'); setMobileRailOpen(false); }} style={{ cursor: 'pointer' }}>
+        <div className={styles.railBrand} onClick={() => { handleViewChange('landing'); setMobileRailOpen(false); }} style={{ cursor: 'pointer' }}>
           <div className={styles.logoText}>AI Visibility</div>
           <div className={styles.sub}>audit console</div>
         </div>
@@ -1271,7 +1240,7 @@ export default function Home() {
             <div
               key={nav.id}
               className={`${styles.railItem} ${activeNav === nav.id ? styles.railItemActive : ''}`}
-              onClick={() => { setActiveNav(nav.id); setMobileRailOpen(false); }}
+              onClick={() => { handleNavChange(nav.id); setMobileRailOpen(false); }}
             >
               <span className={styles.dot}></span>{nav.label}
             </div>
@@ -1291,7 +1260,7 @@ export default function Home() {
       <main className={styles.main}>
         {/* Mobile Console Header */}
         <div className={styles.mobileConsoleHeader}>
-          <div className={styles.logoText} onClick={() => setView('landing')}>AI Visibility</div>
+          <div className={styles.logoText} onClick={() => handleViewChange('landing')}>AI Visibility</div>
           <button type="button" className={styles.mobileMenuBtn} onClick={() => setMobileRailOpen(o => !o)}>
             <span style={{ fontSize: '20px' }}>☰</span>
           </button>
@@ -1306,7 +1275,7 @@ export default function Home() {
               <span className={styles.mono}>audited {formatScanTime(result?.scannedAt)}</span>
               <button
                 type="button"
-                onClick={() => setView('landing')}
+                onClick={() => handleViewChange('landing')}
                 style={{ background: 'none', border: 'none', color: 'var(--visible)', fontSize: '11px', cursor: 'pointer', padding: 0, fontFamily: 'var(--font-mono)', textDecoration: 'underline' }}
               >
                 ← New audit
@@ -2248,8 +2217,10 @@ export default function Home() {
 
         </div>
       </main>
+    </div>
+    )}
 
-      <footer style={{ textAlign: 'center', padding: '40px 20px', fontSize: '13px', color: 'var(--ink-soft)', borderTop: '1px solid var(--line)', marginTop: '40px' }}>
+      <footer style={{ textAlign: 'center', padding: '40px 20px', fontSize: '13px', color: 'var(--ink-soft)', borderTop: '1px solid var(--line)', background: 'var(--bg)' }}>
         <div style={{ marginBottom: '16px' }}>
           <a href="/glossary" style={{ color: 'var(--ink)', textDecoration: 'none', fontWeight: 600 }}>Glossary / Knowledgebase</a>
         </div>
