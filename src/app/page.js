@@ -625,7 +625,16 @@ function LandingPage({ onScan, scanning, scanStep, setView }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (inputUrl.trim()) onScan(inputUrl.trim());
+    if (inputUrl.trim()) {
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'audit_run', {
+          event_category: 'Audit',
+          event_label: inputUrl.trim(),
+          url_audited: inputUrl.trim()
+        });
+      }
+      onScan(inputUrl.trim());
+    }
   };
 
   const quickPicks = ['anthropic.com', 'openai.com', 'docs.stripe.com', 'wikipedia.org'];
@@ -785,7 +794,7 @@ function LandingPage({ onScan, scanning, scanStep, setView }) {
           <a href="#who-for" className={styles.landingNavLink}>Who is it for?</a>
           <a href="#radar" className={styles.landingNavLink}>Bot Radar</a>
           <a href="#matrix" className={styles.landingNavLink}>Audit Matrix</a>
-          <a href="#why-metrics" className={styles.landingNavLink}>Why Metrics Matter</a>
+          <a href="/glossary" className={styles.landingNavLink}>Glossary</a>
         </nav>
       </header>
 
@@ -2241,6 +2250,9 @@ export default function Home() {
       </main>
 
       <footer style={{ textAlign: 'center', padding: '40px 20px', fontSize: '13px', color: 'var(--ink-soft)', borderTop: '1px solid var(--line)', marginTop: '40px' }}>
+        <div style={{ marginBottom: '16px' }}>
+          <a href="/glossary" style={{ color: 'var(--ink)', textDecoration: 'none', fontWeight: 600 }}>Glossary / Knowledgebase</a>
+        </div>
         Built by <a href="https://thehubcontent.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--ink)', fontWeight: 600, textDecoration: 'none', borderBottom: '1px solid var(--ink)' }}>The Hub Content</a>
       </footer>
     </div>

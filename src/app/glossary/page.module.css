@@ -1,0 +1,89 @@
+.glossaryWrap {
+  min-height: 100vh;
+  padding: 80px 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: 48px;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+  margin: 0 0 16px 0;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: var(--ink-soft);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 40px;
+  transition: color 0.2s ease;
+}
+
+.backLink:hover {
+  color: var(--ink);
+}
+
+.grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.term {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.definition {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.footer {
+  text-align: center;
+  padding: 60px 0 20px;
+  font-size: 13px;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--line);
+  margin-top: 60px;
+}
