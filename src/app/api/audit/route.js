@@ -4,8 +4,9 @@ import { checkSitemap } from '@/lib/checkSitemap';
 import { checkHtml } from '@/lib/checkHtml';
 import { checkPageSpeed } from '@/lib/checkPageSpeed';
 import { checkAgenticBrowsing } from '@/lib/checkAgenticBrowsing';
+import { checkSemantics } from '@/lib/checkSemantics';
 import { calculateScores } from '@/utils/scoring';
-
+import { RULES_CATALOG } from '@/config/rulesConfig';
 function normalizeInputUrl(rawUrl) {
   if (!rawUrl) return null;
   let trimmed = rawUrl.trim();
@@ -35,6 +36,10 @@ async function auditSingleUrl(rawUrl, options = {}) {
     checkHtml(cleanUrl, customUserAgent),
     checkPageSpeed(cleanUrl)
   ]);
+
+  // Semantic checks via free local NLP
+  const semanticsData = checkSemantics(htmlData.extractedBodySnippet || '');
+  htmlData.semantics = semanticsData;
 
   // Sitemap check (uses declared sitemap from robots if present)
   const sitemapData = await checkSitemap(domain, robotsData.sitemapUrl, cleanUrl, robotsData);
@@ -238,7 +243,12 @@ async function auditSingleUrl(rawUrl, options = {}) {
 
   // 10. Content Structure: Monolithic Paragraphs
   const avgParaWords = htmlData.browserSignals?.paragraphs?.avgWords;
-  if (avgParaWords != null && avgParaWords > 120) {
+  const paragraphRule = RULES_CATALOG.find(r => r.id === 'R-EXT-03');
+  const isParaRuleApplicable = paragraphRule?.isApplicable 
+    ? paragraphRule.isApplicable(htmlData.structuredData?.schemaTypes || []) 
+    : true;
+    
+  if (isParaRuleApplicable && avgParaWords != null && avgParaWords > 120) {
     recommendations.push({
       priority: 'P2',
       title: `Break Down Long Paragraphs (Avg ${avgParaWords} words)`,

@@ -145,7 +145,18 @@ export const RULES_CATALOG = [
   // 5. Content Structure & Extractability
   { id: 'R-EXT-01', group: 'Content structure & extractability', name: 'Text present only after JS execution under 20%', source: 'Heuristic (AI fetcher behavior)', defaultSeverity: 'WARN' },
   { id: 'R-EXT-02', group: 'Content structure & extractability', name: 'Content-to-code ratio above 10%', source: 'Heuristic (Markup efficiency)', defaultSeverity: 'WARN' },
-  { id: 'R-EXT-03', group: 'Content structure & extractability', name: 'Average paragraph length under 150 words', source: 'Heuristic (LLM chunking)', defaultSeverity: 'PASS' },
+  { 
+    id: 'R-EXT-03', 
+    group: 'Content structure & extractability', 
+    name: 'Average paragraph length under 150 words', 
+    source: 'Heuristic (LLM chunking)', 
+    defaultSeverity: 'PASS',
+    isApplicable: (schemaTypes = []) => {
+      // Exclude academic or deeply technical schemas from chunking heuristics
+      const exemptSchemas = ['ScholarlyArticle', 'TechArticle', 'MedicalScholarlyArticle'];
+      return !schemaTypes.some(type => exemptSchemas.includes(type));
+    }
+  },
   { id: 'R-EXT-04', group: 'Content structure & extractability', name: 'Data tables contain <th> headers and scope', source: 'HTML5 / WCAG SC 1.3.1', defaultSeverity: 'FAIL' },
   { id: 'R-EXT-05', group: 'Content structure & extractability', name: 'Accordion/collapsed content present in static HTML', source: 'Heuristic (Non-JS crawler)', defaultSeverity: 'WARN' },
   { id: 'R-EXT-06', group: 'Content structure & extractability', name: 'No full-viewport cookie consent overlay before main DOM', source: 'WCAG 2.4.1 / Heuristic', defaultSeverity: 'FAIL' },

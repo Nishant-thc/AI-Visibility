@@ -242,7 +242,7 @@ export async function checkPageSpeed(url) {
 
   try {
     // Budget: 35s for mobile (primary Google index), 28s for desktop
-    const mobilePromise = fetch(mobileUrl, { signal: AbortSignal.timeout(35000) })
+    const mobilePromise = fetch(mobileUrl, { signal: AbortSignal.timeout(35000), next: { revalidate: 86400 } })
       .then(async res => {
         if (!res.ok) return { ok: false, status: res.status };
         const data = await res.json();
@@ -250,7 +250,7 @@ export async function checkPageSpeed(url) {
       })
       .catch(err => ({ ok: false, error: err.message }));
 
-    const desktopPromise = fetch(desktopUrl, { signal: AbortSignal.timeout(28000) })
+    const desktopPromise = fetch(desktopUrl, { signal: AbortSignal.timeout(28000), next: { revalidate: 86400 } })
       .then(async res => {
         if (!res.ok) return { ok: false, status: res.status };
         const data = await res.json();

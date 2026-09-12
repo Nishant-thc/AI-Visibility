@@ -59,7 +59,10 @@ function PriorityBadge({ priority }) {
   );
 }
 
+import { useState } from 'react';
+
 export default function AgenticBrowsingTab({ result, styles: externalStyles }) {
+  const [showDeepScanInfo, setShowDeepScanInfo] = useState(false);
   const s = externalStyles || styles;
   const agentic = result?.signals?.agenticBrowsing;
 
@@ -212,6 +215,67 @@ export default function AgenticBrowsingTab({ result, styles: externalStyles }) {
             <p className={s.panelNote} style={{ textAlign: 'center', padding: '20px 0' }}>
               ✓ No critical agentic browsing issues detected. This page is well-optimized for AI agent access.
             </p>
+          </div>
+        </div>
+      )}
+
+      {/* Semantic Analysis (V2 Free-Free NLP) */}
+      {result?.signals?.html?.semantics && (
+        <div className={s.panel}>
+          <div className={s.panelHead}>
+            <h3>Semantic AI Analysis</h3>
+            <span className={s.verified}>via server-side NLP</span>
+          </div>
+          <div className={s.panelBody}>
+            <div style={{ display: 'flex', gap: '20px', marginBottom: '16px' }}>
+              <div style={{ flex: 1, padding: '16px', background: 'var(--paper)', borderRadius: '8px', border: '1px solid var(--line)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--ink-soft)', marginBottom: '4px' }}>Entity Density</div>
+                <div style={{ fontSize: '24px', fontWeight: 'bold' }}>{result.signals.html.semantics.entityDensity} <span style={{ fontSize: '14px', fontWeight: 'normal' }}>/ 1k words</span></div>
+              </div>
+              <div style={{ flex: 1, padding: '16px', background: 'var(--paper)', borderRadius: '8px', border: '1px solid var(--line)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--ink-soft)', marginBottom: '4px' }}>Readability Score</div>
+                <div style={{ fontSize: '24px', fontWeight: 'bold' }}>{result.signals.html.semantics.readabilityScore || 'N/A'}</div>
+              </div>
+            </div>
+            
+            <div style={{ marginBottom: '16px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--ink-soft)', marginBottom: '8px' }}>Top Extracted Entities</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {result.signals.html.semantics.topEntities.map((entity, i) => (
+                  <span key={i} style={{ padding: '4px 10px', background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: '16px', fontSize: '12px' }}>{entity}</span>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ marginTop: '20px', padding: '16px', background: 'rgba(34,197,94,0.05)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h4 style={{ margin: 0, fontSize: '14px' }}>Deep Scan (Client-Side AI)</h4>
+                  <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--ink-soft)' }}>Run a lightweight LLM directly in your browser to score semantic relevance. (100% Free)</p>
+                </div>
+                <button 
+                  onClick={() => setShowDeepScanInfo(!showDeepScanInfo)}
+                  style={{ padding: '8px 16px', background: showDeepScanInfo ? 'transparent' : 'var(--ink)', color: showDeepScanInfo ? 'var(--ink)' : 'var(--bg)', border: showDeepScanInfo ? '1px solid var(--line)' : 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px' }}
+                >
+                  {showDeepScanInfo ? 'Close' : 'Run Deep Scan'}
+                </button>
+              </div>
+              
+              {showDeepScanInfo && (
+                <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(34,197,94,0.2)', fontSize: '13px', lineHeight: 1.6, color: 'var(--ink-soft)' }}>
+                  <p style={{ margin: '0 0 12px 0' }}>
+                    <strong>Coming Soon!</strong> The Deep Scan feature will download a lightweight, open-source embedding model (like Xenova/bge-small) directly into your browser cache.
+                  </p>
+                  <p style={{ margin: '0 0 12px 0' }}>
+                    Instead of sending your data to expensive third-party APIs, this allows us to perform advanced semantic chunking and relevance scoring locally on your device for free.
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ink)', fontWeight: 600, fontSize: '12px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--warn)', display: 'inline-block', animation: 'pulse 2s infinite' }}></span>
+                    Feature is currently in development.
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
