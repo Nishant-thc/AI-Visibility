@@ -40,7 +40,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${fraunces.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`} suppressHydrationWarning>
       <head>
         <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
+          src={`https://www.googletagmanager.com/gtag/js?id=G-6N606L7Z6K`}
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
@@ -48,7 +48,7 @@ export default function RootLayout({ children }) {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
+            gtag('config', 'G-6N606L7Z6K', {
               page_path: window.location.pathname,
             });
           `}
