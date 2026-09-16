@@ -199,6 +199,9 @@ export default function CrawlerAccessTab({ result, styles: externalStyles }) {
           <span className={s.verified}>verified {formatScanTime(scannedAt)}</span>
         </div>
         <div className={s.panelBody}>
+          <div style={{ padding: '12px', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '6px', marginBottom: '16px', fontSize: '13px', color: 'var(--ink)' }}>
+            <strong>Is your sitemap complete?</strong> This sitemap declares <strong>{result?.signals?.sitemap?.urlCount ?? 0}</strong> URLs. Cross-reference this by searching <code style={{background: 'rgba(0,0,0,0.05)', padding: '2px 4px', borderRadius: '4px'}}>site:{result?.domain || 'yourdomain.com'}</code> on Google. If Google has indexed significantly more pages, your sitemap is missing pages and should be updated.
+          </div>
           <table className={s.table}>
             <thead><tr><th>Check</th><th>Result</th></tr></thead>
             <tbody>

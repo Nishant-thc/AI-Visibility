@@ -1690,7 +1690,7 @@ export default function Home() {
                           <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, fontSize: '12.5px' }}>{s.type}</td>
                           <td>
                             <span className={`${styles.pill} ${s.status === 'Eligible' ? styles.pillAllow : s.status === 'Has Warnings' ? styles.pillPartial : styles.pillBlock}`}>
-                              {s.status === 'Eligible' ? 'Perfect' : s.status === 'Has Warnings' ? 'Needs Improvement' : 'Invalid'}
+                              {s.status === 'Eligible' ? 'Perfect' : s.status === 'Has Warnings' ? 'Needs Improvement' : s.status === 'Has Errors' ? 'Invalid (Missing Required Fields)' : 'Deprecated / Not Eligible'}
                             </span>
                           </td>
                           <td className={styles.urlCell} style={{ fontSize: '12px', color: 'var(--ink)' }}>
