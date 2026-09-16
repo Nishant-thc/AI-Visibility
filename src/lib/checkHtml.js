@@ -500,7 +500,7 @@ export async function checkHtml(url, customUserAgent) {
     if (structuredData.schemaTypes.length === 0) {
       schemaScore = 0;
       schemaStatus = 'Fail';
-      schemaExplanation = 'Zero structured data detected. AI systems cannot disambiguate key entities, authors, or products.';
+      schemaExplanation = 'No schema found. Zero structured data detected. AI systems cannot disambiguate key entities, authors, or products.';
       schemaFix = 'Implement Schema.org JSON-LD (e.g. Organization, Article, or Product) on all priority pages.';
     } else if (hasHighValue && errorsCount === 0) {
       schemaScore = warningsCount > 0 ? 90 : 100;

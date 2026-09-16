@@ -29,7 +29,7 @@ async function processLogo() {
       }
     });
     
-    await image.writeAsync('public/logo.png');
+    await image.writeAsync('public/logo_processed.png');
     console.log('Logo processed successfully and saved as public/logo.png');
   } catch (err) {
     console.error('Error processing image:', err);

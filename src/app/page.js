@@ -1109,8 +1109,10 @@ export default function Home() {
       setShowSetup(false);
 
       if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'audit_run', {
-          'target_domain': inputUrl
+        window.gtag('event', 'audit_complete', {
+          'target_url': inputUrl,
+          'final_score': data.finalScore,
+          'grade': data.grade
         });
       }
     } catch (err) {

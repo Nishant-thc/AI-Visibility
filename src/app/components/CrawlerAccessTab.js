@@ -131,62 +131,53 @@ export default function CrawlerAccessTab({ result, styles: externalStyles }) {
         </div>
       </div>
 
-      {/* Grouped bot tables */}
-      {TAXONOMY_ORDER.map(taxonomyType => {
-        const bots = grouped[taxonomyType];
-        if (!bots || bots.length === 0) return null;
-        const meta = TAXONOMY_LABELS[taxonomyType] || { label: taxonomyType, emoji: '🤖', why: '', critical: false };
-
-        return (
-          <div key={taxonomyType} className={s.panel}>
-            <div className={s.panelHead}>
-              <h3>{meta.emoji} {meta.label}</h3>
-              <span className={s.verified}>{bots.length} bot{bots.length !== 1 ? 's' : ''} tested</span>
-            </div>
-            <div className={s.panelBody}>
-              {meta.why && (
-                <p className={s.panelNote}>
-                  {meta.critical && <span style={{ color: 'var(--block)', fontWeight: 600, marginRight: '4px' }}>Critical for AI visibility.</span>}
-                  {meta.why}
-                </p>
-              )}
-              <div style={{ overflowX: 'auto' }}>
-                <table className={s.table}>
-                  <thead>
-                    <tr>
-                      <th>Bot / User-Agent</th>
-                      <th>Operator</th>
-                      <th>Role</th>
-                      <th>Status</th>
-                      <th>Rule Matched</th>
+      {/* Single bot table */}
+      <div className={s.panel}>
+        <div className={s.panelHead}>
+          <h3>AI Bot Access Details</h3>
+          <span className={s.verified}>Live evaluation against {botMatrix.length} bots</span>
+        </div>
+        <div className={s.panelBody}>
+          <div style={{ overflowX: 'auto' }}>
+            <table className={s.table}>
+              <thead>
+                <tr>
+                  <th>Bot / User-Agent</th>
+                  <th>Type</th>
+                  <th>Operator</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Rule Matched</th>
+                </tr>
+              </thead>
+              <tbody>
+                {botMatrix.map(bot => {
+                  const meta = TAXONOMY_LABELS[bot.taxonomyType || 'Model Training Crawl'] || { emoji: '🤖' };
+                  return (
+                    <tr key={bot.name}>
+                      <td>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, fontSize: '12.5px' }}>{meta.emoji} {bot.name}</div>
+                        {bot.criticalForVisibility && (
+                          <div style={{ fontSize: '10px', color: 'var(--block)', marginTop: '2px' }}>★ Critical for AI visibility</div>
+                        )}
+                      </td>
+                      <td style={{ fontSize: '11.5px', color: 'var(--ink-soft)' }}>{bot.taxonomyType || 'Unknown'}</td>
+                      <td style={{ fontSize: '12px', color: 'var(--ink-soft)' }}>{bot.operator}</td>
+                      <td style={{ fontSize: '11.5px', color: 'var(--ink-soft)' }}>{bot.role}</td>
+                      <td>
+                        <StatusPill status={bot.status} styles={s} />
+                      </td>
+                      <td className={s.urlCell} style={{ fontSize: '11px' }}>
+                        {bot.matchedRule || bot.ruleApplied || 'No matching rule'}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {bots.map(bot => (
-                      <tr key={bot.name}>
-                        <td>
-                          <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, fontSize: '12.5px' }}>{bot.name}</div>
-                          {bot.criticalForVisibility && (
-                            <div style={{ fontSize: '10px', color: 'var(--block)', marginTop: '2px' }}>★ Critical for AI visibility</div>
-                          )}
-                        </td>
-                        <td style={{ fontSize: '12px', color: 'var(--ink-soft)' }}>{bot.operator}</td>
-                        <td style={{ fontSize: '11.5px', color: 'var(--ink-soft)' }}>{bot.role}</td>
-                        <td>
-                          <StatusPill status={bot.status} styles={s} />
-                        </td>
-                        <td className={s.urlCell} style={{ fontSize: '11px' }}>
-                          {bot.matchedRule || bot.ruleApplied || 'No matching rule'}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-        );
-      })}
+        </div>
+      </div>
 
       {/* Raw robots.txt */}
       {result?.signals?.robots?.rawContent && (

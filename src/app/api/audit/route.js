@@ -7,13 +7,52 @@ import { checkAgenticBrowsing } from '@/lib/checkAgenticBrowsing';
 import { checkSemantics } from '@/lib/checkSemantics';
 import { calculateScores } from '@/utils/scoring';
 import { RULES_CATALOG } from '@/config/rulesConfig';
+const rateLimitMap = new Map();
+function checkRateLimit(ip) {
+  const now = Date.now();
+  if (!rateLimitMap.has(ip)) {
+    rateLimitMap.set(ip, { count: 1, firstRequest: now });
+    return true;
+  }
+  const data = rateLimitMap.get(ip);
+  if (now - data.firstRequest > 60000) {
+    rateLimitMap.set(ip, { count: 1, firstRequest: now });
+    return true;
+  }
+  if (data.count >= 3) {
+    return false;
+  }
+  data.count++;
+  return true;
+}
+
+function isPrivateIp(hostname) {
+  if (hostname === 'localhost') return true;
+  const parts = hostname.split('.');
+  if (parts.length !== 4) return false;
+  if (parts[0] === '127' || parts[0] === '10') return true;
+  if (parts[0] === '192' && parts[1] === '168') return true;
+  if (parts[0] === '172') {
+    const p2 = parseInt(parts[1], 10);
+    if (p2 >= 16 && p2 <= 31) return true;
+  }
+  return false;
+}
+
 function normalizeInputUrl(rawUrl) {
   if (!rawUrl) return null;
   let trimmed = rawUrl.trim();
   if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
     trimmed = `https://${trimmed}`;
   }
-  return new URL(trimmed);
+  const urlObj = new URL(trimmed);
+  if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+    throw new Error('Only HTTP and HTTPS protocols are allowed.');
+  }
+  if (isPrivateIp(urlObj.hostname)) {
+    throw new Error('Private network addresses are not allowed.');
+  }
+  return urlObj;
 }
 
 async function auditSingleUrl(rawUrl, options = {}) {
@@ -340,7 +379,14 @@ async function auditSingleUrl(rawUrl, options = {}) {
 }
 
 export async function POST(request) {
+  const startTime = Date.now();
   try {
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+    if (ip !== 'unknown' && !checkRateLimit(ip)) {
+      console.warn(`[Audit] Rate limit exceeded for IP: ${ip}`);
+      return new Response(JSON.stringify({ error: 'Too many requests. Please wait a minute before trying again.' }), { status: 429 });
+    }
+
     const body = await request.json();
     const { url, mode = 'single', competitors = [], sampleSize = 5, customUserAgent, jsRenderMode } = body;
 
@@ -419,6 +465,9 @@ export async function POST(request) {
           .map(r => r.value);
       }
     }
+
+    const duration = Date.now() - startTime;
+    console.log(`[Audit Complete] URL: ${primaryResult.url} | Score: ${primaryResult.finalScore} | Duration: ${duration}ms | IP: ${ip}`);
 
     return new Response(JSON.stringify(primaryResult), {
       status: 200,
