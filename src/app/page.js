@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './page.module.css';
 import CrawlerAccessTab from './components/CrawlerAccessTab';
 import AgenticBrowsingTab from './components/AgenticBrowsingTab';
@@ -1052,12 +1052,30 @@ export default function Home() {
   const [mobileRailOpen, setMobileRailOpen] = useState(false);
 
   // Analytics Helpers
-  const handleViewChange = (newView) => {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const urlParam = params.get('url');
+      if (urlParam) {
+        setUrl(urlParam);
+        if (window.location.hash === '#console') {
+           // We could auto-scan here, but for now just populate
+        }
+      }
+    }
+  }, []);
+
+  const handleViewChange = (newView, domainToTrack = '') => {
     setView(newView);
-    if (typeof window !== 'undefined' && window.gtag) {
-      const path = newView === 'landing' ? '/' : '/console';
+    if (typeof window !== 'undefined') {
+      let path = newView === 'landing' ? '/' : '/console';
+      if (domainToTrack && newView === 'console') {
+        path = `/?url=${encodeURIComponent(domainToTrack)}#console`;
+      }
       window.history.pushState(null, '', path);
-      window.gtag('config', 'G-6N606L7Z6K', { page_path: path });
+      if (window.gtag) {
+        window.gtag('config', 'G-6N606L7Z6K', { page_path: path });
+      }
     }
   };
 
@@ -1104,7 +1122,7 @@ export default function Home() {
 
       setUrl(inputUrl);
       setResult(data);
-      handleViewChange('console');
+      handleViewChange('console', data.domain || inputUrl);
       handleNavChange('overview');
       setShowSetup(false);
 
