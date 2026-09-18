@@ -618,7 +618,7 @@ function PerformanceTabSection({ result }) {
 }
 
 /* ─── Landing Page ────────────────────────────────────────────────────── */
-function LandingPage({ onScan, scanning, scanStep, setView }) {
+function LandingPage({ onScan, scanning, scanStep, setView, scanMode, setScanMode }) {
   const [inputUrl, setInputUrl] = useState('');
   const [selectedBot, setSelectedBot] = useState('OAI-SearchBot');
   const [matrixFilter, setMatrixFilter] = useState('all');
@@ -808,6 +808,16 @@ function LandingPage({ onScan, scanning, scanStep, setView }) {
           </div>
         ) : (
           <form onSubmit={handleSubmit} id="scan-form">
+            <div style={{ display: 'flex', gap: '20px', marginBottom: '16px', justifyContent: 'center' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '15px', color: 'var(--ink)' }}>
+                <input type="radio" name="landingScanMode" value="exact" checked={scanMode === 'exact'} onChange={() => setScanMode('exact')} disabled={scanning} />
+                Exact URL
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '15px', color: 'var(--ink)' }}>
+                <input type="radio" name="landingScanMode" value="domain" checked={scanMode === 'domain'} onChange={() => setScanMode('domain')} disabled={scanning} />
+                Whole Domain Crawl
+              </label>
+            </div>
             <div className={styles.landingInputWrap}>
               <input
                 type="text"
@@ -1040,6 +1050,8 @@ function LandingPage({ onScan, scanning, scanStep, setView }) {
 /* ─── Main App ────────────────────────────────────────────────────────── */
 export default function Home() {
   const [view, setView] = useState('landing'); // 'landing' | 'console'
+  const [scanMode, setScanMode] = useState('exact'); // 'exact' | 'domain'
+  const [domainResults, setDomainResults] = useState([]);
   const [url, setUrl] = useState('');
   const [deepCrawl, setDeepCrawl] = useState(true);
   const [scanning, setScanning] = useState(false);
@@ -1100,38 +1112,80 @@ export default function Home() {
 
     setError(null);
     setScanning(true);
-    setScanStep('1/6 Initializing diagnostic fetch & verifying live reachability…');
+    setDomainResults([]);
 
     try {
-      setTimeout(() => setScanStep('2/6 Inspecting robots.txt rules for AI bot taxonomy…'), 600);
-      setTimeout(() => setScanStep('3/6 Discovering sitemaps & llms.txt endpoints…'), 1400);
-      setTimeout(() => setScanStep('4/6 Extracting raw HTML, semantic landmarks & JSON-LD graph…'), 2400);
-      setTimeout(() => setScanStep('5/6 Evaluating extractability & browser signals…'), 3600);
-      setTimeout(() => setScanStep('6/6 Fetching Core Web Vitals from PageSpeed Insights API…'), 5000);
-
-      const res = await fetch('/api/audit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: inputUrl, deepCrawl })
-      });
-
-      const data = await res.json();
-      if (!res.ok || data.error) {
-        throw new Error(data.error || 'Failed to complete visibility audit.');
-      }
-
-      setUrl(inputUrl);
-      setResult(data);
-      handleViewChange('console', data.domain || inputUrl);
-      handleNavChange('overview');
-      setShowSetup(false);
-
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'audit_complete', {
-          'target_url': inputUrl,
-          'final_score': data.finalScore,
-          'grade': data.grade
+      if (scanMode === 'domain') {
+        setScanStep('1/3 Discovering sitemap and extracting URL types...');
+        const discRes = await fetch('/api/discover', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: inputUrl })
         });
+        const discData = await discRes.json();
+        if (!discRes.ok || discData.error) throw new Error(discData.error || 'Discovery failed.');
+
+        const urlsToAudit = discData.urls || [{ url: inputUrl, type: 'Homepage' }];
+        const resultsArray = [];
+
+        for (let i = 0; i < urlsToAudit.length; i++) {
+          const u = urlsToAudit[i];
+          setScanStep(`2/3 Auditing ${u.type} (${i + 1}/${urlsToAudit.length}): ${u.url}`);
+          const auditRes = await fetch('/api/audit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: u.url, deepCrawl: false })
+          });
+          const auditData = await auditRes.json();
+          if (auditRes.ok && !auditData.error) {
+             auditData.pageType = u.type; // Tag the result
+             resultsArray.push(auditData);
+          }
+        }
+        
+        if (resultsArray.length === 0) throw new Error('All audited pages failed.');
+        
+        setScanStep('3/3 Aggregating domain report...');
+        setDomainResults(resultsArray);
+        setResult(resultsArray[0]); // Default to first result (homepage)
+        setUrl(inputUrl);
+        handleViewChange('console', discData.domain || inputUrl);
+        handleNavChange('domain-overview');
+        setShowSetup(false);
+
+      } else {
+        // Exact URL Mode
+        setScanStep('1/6 Initializing diagnostic fetch & verifying live reachability…');
+        setTimeout(() => setScanStep('2/6 Inspecting robots.txt rules for AI bot taxonomy…'), 600);
+        setTimeout(() => setScanStep('3/6 Discovering sitemaps & llms.txt endpoints…'), 1400);
+        setTimeout(() => setScanStep('4/6 Extracting raw HTML, semantic landmarks & JSON-LD graph…'), 2400);
+        setTimeout(() => setScanStep('5/6 Evaluating extractability & browser signals…'), 3600);
+        setTimeout(() => setScanStep('6/6 Fetching Core Web Vitals from PageSpeed Insights API…'), 5000);
+
+        const res = await fetch('/api/audit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: inputUrl, deepCrawl })
+        });
+
+        const data = await res.json();
+        if (!res.ok || data.error) {
+          throw new Error(data.error || 'Failed to complete visibility audit.');
+        }
+
+        setUrl(inputUrl);
+        setResult(data);
+        handleViewChange('console', data.domain || inputUrl);
+        handleNavChange('overview');
+        setShowSetup(false);
+
+        if (typeof window !== 'undefined' && window.gtag) {
+          window.gtag('event', 'audit_complete', {
+            'target_url': inputUrl,
+            'final_score': data.finalScore,
+            'grade': data.grade
+          });
+        }
       }
     } catch (err) {
       console.error(err);
@@ -1226,6 +1280,8 @@ export default function Home() {
           scanning={scanning}
           scanStep={scanStep}
           setView={handleViewChange}
+          scanMode={scanMode}
+          setScanMode={setScanMode}
         />
       ) : (
     <div className={styles.app}>
@@ -1244,7 +1300,8 @@ export default function Home() {
 
         <nav className={styles.railNav}>
           {[
-            { id: 'overview', label: 'Overview' },
+            ...(scanMode === 'domain' && domainResults.length > 0 ? [{ id: 'domain-overview', label: 'Domain Overview' }] : []),
+            { id: 'overview', label: 'Page Overview' },
             { id: 'snapshot', label: 'Live snapshot' },
             { id: 'checklist', label: 'Full checklist' },
             { id: 'crawl', label: 'AI crawler access' },
@@ -1354,6 +1411,16 @@ export default function Home() {
               </p>
 
               <form onSubmit={(e) => { e.preventDefault(); handleScan(); }}>
+                <div style={{ display: 'flex', gap: '20px', marginBottom: '16px', justifyContent: 'flex-start' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: 'var(--ink)' }}>
+                    <input type="radio" name="setupScanMode" value="exact" checked={scanMode === 'exact'} onChange={() => setScanMode('exact')} disabled={scanning} />
+                    Exact URL
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: 'var(--ink)' }}>
+                    <input type="radio" name="setupScanMode" value="domain" checked={scanMode === 'domain'} onChange={() => setScanMode('domain')} disabled={scanning} />
+                    Whole Domain Crawl
+                  </label>
+                </div>
                 <div className={styles.inputGroup}>
                   <input
                     type="text"
@@ -1420,6 +1487,35 @@ export default function Home() {
               </div>
             </div>
           )}
+
+          {/* ================= 0. DOMAIN OVERVIEW ================= */}
+          <div className={`${styles.section} ${activeNav === 'domain-overview' ? styles.sectionActive : ''}`} id="domain-overview">
+            <h2 className={styles.sectionTitle}>Domain Scan Results</h2>
+            <p className={styles.sectionDesc} style={{ marginBottom: '24px' }}>
+              We discovered {domainResults.length} representative pages from your domain using the sitemap. Select a page to view its full diagnostic dossier.
+            </p>
+            <div style={{ display: 'grid', gap: '16px' }}>
+              {domainResults.map((res, i) => (
+                <div key={i} style={{ padding: '20px', background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '12px', fontWeight: 600, background: 'var(--ink)', color: 'var(--bg)', padding: '2px 8px', borderRadius: '12px', textTransform: 'uppercase' }}>{res.pageType}</span>
+                      <a href={res.domain} target="_blank" rel="noreferrer" style={{ fontSize: '15px', fontWeight: 500, color: 'var(--ink)', textDecoration: 'none' }}>{res.domain}</a>
+                    </div>
+                    <div style={{ fontSize: '13px', color: 'var(--ink-soft)' }}>
+                      Visibility Score: <strong style={{ color: res.finalScore >= 80 ? 'var(--visible)' : res.finalScore >= 50 ? 'var(--warn)' : 'var(--block)' }}>{res.finalScore}/100</strong> • Grade: {res.grade}
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => { setResult(res); handleNavChange('overview'); }}
+                    style={{ padding: '8px 16px', background: 'var(--ink)', color: 'var(--bg)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}
+                  >
+                    View Report →
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* ================= 1. OVERVIEW ================= */}
           <div className={`${styles.section} ${activeNav === 'overview' ? styles.sectionActive : ''}`} id="overview">
