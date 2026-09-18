@@ -809,11 +809,11 @@ function LandingPage({ onScan, scanning, scanStep, setView, scanMode, setScanMod
         ) : (
           <form onSubmit={handleSubmit} id="scan-form">
             <div style={{ display: 'flex', gap: '20px', marginBottom: '16px', justifyContent: 'center' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '15px', color: 'var(--ink)' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '15px', color: '#fff', opacity: scanMode === 'exact' ? 1 : 0.65 }}>
                 <input type="radio" name="landingScanMode" value="exact" checked={scanMode === 'exact'} onChange={() => setScanMode('exact')} disabled={scanning} />
                 Exact URL
               </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '15px', color: 'var(--ink)' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '15px', color: '#fff', opacity: scanMode === 'domain' ? 1 : 0.65 }}>
                 <input type="radio" name="landingScanMode" value="domain" checked={scanMode === 'domain'} onChange={() => setScanMode('domain')} disabled={scanning} />
                 Whole Domain Crawl
               </label>
@@ -1326,10 +1326,10 @@ export default function Home() {
 
         <div className={styles.railFoot}>
           {result?.scanId ? `scan #${result.scanId}` : 'single URL'}<br />
-          {result?.isSampled
+          {scanMode === 'domain' ? 'Domain-Wide Audit' : (result?.isSampled
             ? `${result.sampleCount || 1} / ${result.totalDeclared || '?'} URLs sampled`
-            : 'Single URL inspection'}<br />
-          <span style={{ opacity: 0.6, fontSize: '10px' }}>Rules: Sep 2026</span>
+            : 'Single URL inspection')}<br />
+          <a href={result?.url || result?.domain || '#'} target="_blank" rel="noreferrer" style={{ color: 'var(--ink)' }}>{result?.domain}</a>
         </div>
       </aside>
 
@@ -1346,9 +1346,9 @@ export default function Home() {
         {/* Top Bar */}
         <header className={styles.topbar}>
           <div className={styles.scanTarget}>
-            <div className={styles.domain}>{domain}</div>
+            <div className={styles.domain}>{result?.url || result?.domain || domain}</div>
             <div className={styles.scanMeta}>
-              <span>{result?.isSampled ? 'Full-site scan · stratified sample' : 'Single URL inspection'}</span>
+              <span>{scanMode === 'domain' ? 'Domain-Wide Audit' : (result?.isSampled ? 'Full-site scan · stratified sample' : 'Single URL inspection')}</span>
               <span className={styles.mono}>audited {formatScanTime(result?.scannedAt)}</span>
               <button
                 type="button"
@@ -2057,77 +2057,89 @@ export default function Home() {
                     {(() => {
                       // Build priority table from live audit data
                       let rows = [];
-                      if (result?.recommendations && result.recommendations.length > 0) {
-                        rows = result.recommendations.map(r => ({
-                          priority: r.priority || (r.impact === 'High' ? 'P0' : r.impact === 'Medium' ? 'P1' : 'P2'),
-                          issue: r.title,
-                          detail: r.fix || r.rule || 'Action recommended based on audit signals.',
-                          category: r.category || 'General',
-                          affected: r.affected || 'sitewide',
-                          effort: r.effort || 'Low',
-                          status: 'Open'
-                        }));
+                      const generateRowsForTarget = (targetResult, targetUrl, targetType) => {
+                        let targetRows = [];
+                        if (targetResult?.recommendations && targetResult.recommendations.length > 0) {
+                          targetRows = targetResult.recommendations.map(r => ({
+                            priority: r.priority || (r.impact === 'High' ? 'P0' : r.impact === 'Medium' ? 'P1' : 'P2'),
+                            issue: r.title,
+                            detail: r.fix || r.rule || 'Action recommended based on audit signals.',
+                            category: r.category || 'General',
+                            affected: targetType ? `[${targetType}]` : (r.affected || 'sitewide'),
+                            effort: r.effort || 'Low',
+                            status: 'Open'
+                          }));
+                        } else {
+                          const conflicts = targetResult?.criticalConflicts || [];
+                          const signals = targetResult?.signals || {};
+
+                          // P0 — critical blocking issues
+                          conflicts.filter(c => c.severity === 'CRITICAL').forEach(c => {
+                            targetRows.push({ priority: 'P0', issue: c.title, detail: c.fix || c.message, category: 'AI Crawler Access', affected: targetType ? `[${targetType}]` : (c.affected || 'sitewide'), effort: 'Medium', status: 'Open' });
+                          });
+
+                          // P0 — zero structured data
+                          const schemaTypes = signals?.html?.structuredData?.schemaTypes || [];
+                          if (schemaTypes.length === 0) {
+                            targetRows.push({ priority: 'P0', issue: 'Zero structured data in HTML', detail: 'Add Organization + WebSite JSON-LD to every page template. AI citation engines rely on schema to resolve entity identity.', category: 'Structured Data', affected: targetType ? `[${targetType}]` : 'sitewide', effort: 'Low', status: 'Open' });
+                          }
+
+                          // P0 — noindex on crawlable pages
+                          if (signals?.html?.meta?.hasNoIndex) {
+                            targetRows.push({ priority: 'P0', issue: 'noindex on AI-accessible page', detail: 'Crawler can reach the page but will discard content. Remove noindex or gate robots.txt instead.', category: 'Metadata', affected: targetType ? `[${targetType}]` : 'target URL', effort: 'Low', status: 'Open' });
+                          }
+
+                          // P1 — missing sameAs
+                          const sameAsCount = signals?.html?.structuredData?.entityLinking?.count || 0;
+                          if (sameAsCount === 0 && schemaTypes.length > 0) {
+                            targetRows.push({ priority: 'P1', issue: 'Organization sameAs missing', detail: 'Add sameAs to Organization JSON-LD pointing to Wikipedia, Wikidata, LinkedIn company page.', category: 'Structured Data', affected: targetType ? `[${targetType}]` : 'sitewide', effort: 'Low', status: 'Open' });
+                          }
+
+                          // P1 — missing canonical
+                          if (!signals?.html?.meta?.canonicalUrl && !signals?.html?.meta?.canonical) {
+                            targetRows.push({ priority: 'P1', issue: 'Missing canonical tag', detail: 'Self-referencing canonical prevents duplicate content interpretation by crawlers.', category: 'Metadata', affected: targetType ? `[${targetType}]` : 'all pages', effort: 'Low', status: 'Open' });
+                          }
+
+                          // P1 — llms.txt missing
+                          if (!signals?.llmsTxt?.found && !signals?.llmsTxt?.exists) {
+                            targetRows.push({ priority: 'P1', issue: 'No /llms.txt found', detail: 'Forward-looking signal for AI model ingestion preferences. Low effort, high future value.', category: 'AI Crawlers', affected: targetType ? `[${targetType}]` : 'sitewide', effort: 'Low', status: 'Open' });
+                          }
+
+                          // P1 — high TTFB
+                          const ttfb = signals?.pageSpeed?.nativeTiming?.ttfbMs;
+                          if (ttfb != null && ttfb > 800) {
+                            targetRows.push({ priority: 'P1', issue: `TTFB elevated (${ttfb}ms)`, detail: 'AI crawlers time out on slow servers. Target < 600ms. Consider CDN, server-side caching, or edge rendering.', category: 'Performance', affected: targetType ? `[${targetType}]` : 'all pages', effort: 'High', status: 'Open' });
+                          }
+
+                          // P1 — heading skips
+                          if (signals?.html?.headings?.hasSkippedLevels) {
+                            targetRows.push({ priority: 'P1', issue: 'Heading hierarchy skips (H1→H3)', detail: 'Skipped heading levels confuse LLM document parsing. Fix heading order to H1→H2→H3 sequentially.', category: 'Content', affected: targetType ? `[${targetType}]` : 'multiple pages', effort: 'Medium', status: 'Open' });
+                          }
+
+                          // P1 — missing meta description
+                          if (!signals?.html?.meta?.description) {
+                            targetRows.push({ priority: 'P1', issue: 'Missing meta description', detail: 'Meta descriptions are used by AI Overviews and answer engine snippet generation. Target 70–160 chars.', category: 'Metadata', affected: targetType ? `[${targetType}]` : 'all pages', effort: 'Low', status: 'Open' });
+                          }
+
+                          // P2 warnings from conflicts
+                          conflicts.filter(c => c.severity === 'WARNING').forEach(c => {
+                            targetRows.push({ priority: 'P2', issue: c.title, detail: c.fix || c.message, category: 'Cross-signal', affected: targetType ? `[${targetType}]` : (c.affected || '—'), effort: 'Medium', status: 'Open' });
+                          });
+
+                          // P2 — missing OG
+                          if (!signals?.html?.meta?.ogTitle || !signals?.html?.meta?.ogImage) {
+                            targetRows.push({ priority: 'P2', issue: 'Incomplete Open Graph tags', detail: 'og:title and og:image are used by AI systems when extracting page context from social share data.', category: 'Metadata', affected: targetType ? `[${targetType}]` : 'all pages', effort: 'Low', status: 'Open' });
+                          }
+                        }
+                        return targetRows;
+                      };
+
+                      if (scanMode === 'domain' && domainResults.length > 0) {
+                         domainResults.forEach(res => {
+                           rows = rows.concat(generateRowsForTarget(res, res.url, res.pageType?.toUpperCase()));
+                         });
                       } else {
-                        const conflicts = result?.criticalConflicts || [];
-                        const signals = result?.signals || {};
-
-                        // P0 — critical blocking issues
-                        conflicts.filter(c => c.severity === 'CRITICAL').forEach(c => {
-                          rows.push({ priority: 'P0', issue: c.title, detail: c.fix || c.message, category: 'AI Crawler Access', affected: c.affected || 'sitewide', effort: 'Medium', status: 'Open' });
-                        });
-
-                        // P0 — zero structured data
-                        const schemaTypes = signals?.html?.structuredData?.schemaTypes || [];
-                        if (schemaTypes.length === 0) {
-                          rows.push({ priority: 'P0', issue: 'Zero structured data in HTML', detail: 'Add Organization + WebSite JSON-LD to every page template. AI citation engines rely on schema to resolve entity identity.', category: 'Structured Data', affected: 'sitewide', effort: 'Low', status: 'Open' });
-                        }
-
-                        // P0 — noindex on crawlable pages
-                        if (signals?.html?.meta?.hasNoIndex) {
-                          rows.push({ priority: 'P0', issue: 'noindex on AI-accessible page', detail: 'Crawler can reach the page but will discard content. Remove noindex or gate robots.txt instead.', category: 'Metadata', affected: 'target URL', effort: 'Low', status: 'Open' });
-                        }
-
-                        // P1 — missing sameAs
-                        const sameAsCount = signals?.html?.structuredData?.entityLinking?.count || 0;
-                        if (sameAsCount === 0 && schemaTypes.length > 0) {
-                          rows.push({ priority: 'P1', issue: 'Organization sameAs missing', detail: 'Add sameAs to Organization JSON-LD pointing to Wikipedia, Wikidata, LinkedIn company page.', category: 'Structured Data', affected: 'sitewide', effort: 'Low', status: 'Open' });
-                        }
-
-                        // P1 — missing canonical
-                        if (!signals?.html?.meta?.canonicalUrl && !signals?.html?.meta?.canonical) {
-                          rows.push({ priority: 'P1', issue: 'Missing canonical tag', detail: 'Self-referencing canonical prevents duplicate content interpretation by crawlers.', category: 'Metadata', affected: 'all pages', effort: 'Low', status: 'Open' });
-                        }
-
-                        // P1 — llms.txt missing
-                        if (!signals?.llmsTxt?.found && !signals?.llmsTxt?.exists) {
-                          rows.push({ priority: 'P1', issue: 'No /llms.txt found', detail: 'Forward-looking signal for AI model ingestion preferences. Low effort, high future value.', category: 'AI Crawlers', affected: 'sitewide', effort: 'Low', status: 'Open' });
-                        }
-
-                        // P1 — high TTFB
-                        const ttfb = signals?.pageSpeed?.nativeTiming?.ttfbMs;
-                        if (ttfb != null && ttfb > 800) {
-                          rows.push({ priority: 'P1', issue: `TTFB elevated (${ttfb}ms)`, detail: 'AI crawlers time out on slow servers. Target < 600ms. Consider CDN, server-side caching, or edge rendering.', category: 'Performance', affected: 'all pages', effort: 'High', status: 'Open' });
-                        }
-
-                        // P1 — heading skips
-                        if (signals?.html?.headings?.hasSkippedLevels) {
-                          rows.push({ priority: 'P1', issue: 'Heading hierarchy skips (H1→H3)', detail: 'Skipped heading levels confuse LLM document parsing. Fix heading order to H1→H2→H3 sequentially.', category: 'Content', affected: 'multiple pages', effort: 'Medium', status: 'Open' });
-                        }
-
-                        // P1 — missing meta description
-                        if (!signals?.html?.meta?.description) {
-                          rows.push({ priority: 'P1', issue: 'Missing meta description', detail: 'Meta descriptions are used by AI Overviews and answer engine snippet generation. Target 70–160 chars.', category: 'Metadata', affected: 'all pages', effort: 'Low', status: 'Open' });
-                        }
-
-                        // P2 warnings from conflicts
-                        conflicts.filter(c => c.severity === 'WARNING').forEach(c => {
-                          rows.push({ priority: 'P2', issue: c.title, detail: c.fix || c.message, category: 'Cross-signal', affected: c.affected || '—', effort: 'Medium', status: 'Open' });
-                        });
-
-                        // P2 — missing OG
-                        if (!signals?.html?.meta?.ogTitle || !signals?.html?.meta?.ogImage) {
-                          rows.push({ priority: 'P2', issue: 'Incomplete Open Graph tags', detail: 'og:title and og:image are used by AI systems when extracting page context from social share data.', category: 'Metadata', affected: 'all pages', effort: 'Low', status: 'Open' });
-                        }
+                         rows = generateRowsForTarget(result, result?.url, null);
                       }
 
                       if (rows.length === 0) {
