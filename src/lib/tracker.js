@@ -12,38 +12,32 @@ function initializeDb() {
 }
 
 export async function logScan(scanData) {
+  const record = {
+    id: Date.now().toString(),
+    timestamp: new Date().toISOString(),
+    domain: scanData.domain || '',
+    url: scanData.url || '',
+    scanMode: scanData.scanMode || 'exact',
+    pageType: scanData.pageType || 'Homepage',
+    success: scanData.success || false,
+    score: scanData.score || 0,
+    grade: scanData.grade || 'F',
+    durationMs: scanData.durationMs || 0,
+    errorMsg: scanData.errorMsg || null,
+  };
   try {
-    initializeDb();
-    
-    // Read the current data
-    const rawData = fs.readFileSync(DB_PATH, 'utf8');
-    const db = JSON.parse(rawData);
-    
-    // Create a new record
-    const record = {
-      id: Date.now().toString(),
-      timestamp: new Date().toISOString(),
-      domain: scanData.domain || '',
-      url: scanData.url || '',
-      scanMode: scanData.scanMode || 'exact',
-      pageType: scanData.pageType || 'Homepage',
-      success: scanData.success || false,
-      score: scanData.score || 0,
-      grade: scanData.grade || 'F',
-      durationMs: scanData.durationMs || 0,
-      errorMsg: scanData.errorMsg || null,
-    };
-    
-    // Add to the front of the list
-    db.scans.unshift(record);
-    
-    // Cap at 10,000 records so the file doesn't grow infinitely
-    if (db.scans.length > 10000) {
-      db.scans = db.scans.slice(0, 10000);
+    // Attempt to log to local JSON file (this will fail gracefully on Vercel due to read-only filesystem)
+    try {
+      initializeDb();
+      const rawData = fs.readFileSync(DB_PATH, 'utf8');
+      const db = JSON.parse(rawData);
+      db.scans.unshift(record);
+      if (db.scans.length > 10000) db.scans = db.scans.slice(0, 10000);
+      fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2), 'utf8');
+    } catch (fsError) {
+      // Ignore filesystem errors (expected on Vercel)
+      console.log('Skipping local file logging (expected on Vercel):', fsError.message);
     }
-    
-    // Write back
-    fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2), 'utf8');
 
     // Option B: Live Zero-Cost Database via Google Sheets
     // If the webhook URL is set in Vercel environment variables, fire a POST request.
