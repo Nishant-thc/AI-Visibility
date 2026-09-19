@@ -11,7 +11,7 @@ function classifyUrl(urlStr, domain) {
     if (path.includes('/category/') || path.includes('/collections/') || path.includes('/shop/') || path.includes('/c/')) {
       return 'Category';
     }
-    if (path.includes('/blog/') || path.includes('/news/') || path.includes('/article/') || path.includes('/post/')) {
+    if (path.includes('/blog/') || path.includes('/blogs/') || path.includes('/news/') || path.includes('/article/') || path.includes('/post/')) {
       return 'Article';
     }
     if (path.includes('/p/') || path.includes('/product/') || path.includes('/products/') || path.includes('/item/')) {
@@ -54,22 +54,32 @@ export async function POST(request) {
           const locMatches = text.match(/<loc>\s*(.*?)\s*<\/loc>/gi) || [];
           allLocs = locMatches.map(m => m.replace(/<\/?loc>/gi, '').trim());
           
-          // If it's a sitemap index, fetch up to 2 child sitemaps to get real URLs
+          // If it's a sitemap index, fetch up to 10 child sitemaps to get real URLs
           if (text.includes('<sitemapindex') && allLocs.length > 0) {
              const childLocsAggr = [];
-             for (let i = 0; i < Math.min(2, allLocs.length); i++) {
-                 try {
-                    const childRes = await fetch(allLocs[i], { 
-                      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; THC-AiVisibilityBot/1.0)' },
-                      signal: AbortSignal.timeout(4000) 
-                    });
-                    if (childRes.ok) {
-                      const childText = await childRes.text();
-                      const childLocs = childText.match(/<loc>\s*(.*?)\s*<\/loc>/gi) || [];
-                      childLocsAggr.push(...childLocs.map(m => m.replace(/<\/?loc>/gi, '').trim()));
-                    }
-                 } catch(e) {}
-             }
+             const childUrlsToFetch = allLocs.slice(0, 10);
+             
+             // Fetch in parallel
+             const promises = childUrlsToFetch.map(async (childUrl) => {
+               try {
+                  const childRes = await fetch(childUrl, { 
+                    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; THC-AiVisibilityBot/1.0)' },
+                    signal: AbortSignal.timeout(4000) 
+                  });
+                  if (childRes.ok) {
+                    const childText = await childRes.text();
+                    const childLocs = childText.match(/<loc>\s*(.*?)\s*<\/loc>/gi) || [];
+                    return childLocs.map(m => m.replace(/<\/?loc>/gi, '').trim());
+                  }
+               } catch(e) {}
+               return [];
+             });
+
+             const results = await Promise.all(promises);
+             results.forEach(arr => {
+               childLocsAggr.push(...arr);
+             });
+             
              if (childLocsAggr.length > 0) allLocs = childLocsAggr;
           }
           break; 
