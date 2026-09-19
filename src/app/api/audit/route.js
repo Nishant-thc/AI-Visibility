@@ -7,6 +7,7 @@ import { checkAgenticBrowsing } from '@/lib/checkAgenticBrowsing';
 import { checkSemantics } from '@/lib/checkSemantics';
 import { calculateScores } from '@/utils/scoring';
 import { RULES_CATALOG } from '@/config/rulesConfig';
+import { logScan } from '@/lib/tracker';
 const rateLimitMap = new Map();
 function checkRateLimit(ip) {
   const now = Date.now();
@@ -380,6 +381,7 @@ async function auditSingleUrl(rawUrl, options = {}) {
 
 export async function POST(request) {
   const startTime = Date.now();
+  let body;
   try {
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     if (ip !== 'unknown' && !checkRateLimit(ip)) {
@@ -387,7 +389,7 @@ export async function POST(request) {
       return new Response(JSON.stringify({ error: 'Too many requests. Please wait a minute before trying again.' }), { status: 429 });
     }
 
-    const body = await request.json();
+    body = await request.json();
     const { url, mode = 'single', competitors = [], sampleSize = 5, customUserAgent, jsRenderMode } = body;
 
     if (!url && (!competitors || competitors.length === 0)) {
@@ -469,6 +471,20 @@ export async function POST(request) {
     const duration = Date.now() - startTime;
     console.log(`[Audit Complete] URL: ${primaryResult.url} | Score: ${primaryResult.finalScore} | Duration: ${duration}ms | IP: ${ip}`);
 
+    // Try logging to local db async without blocking request
+    try {
+       logScan({
+         domain: primaryResult.domain,
+         url: primaryResult.url,
+         scanMode: mode,
+         pageType: body.pageType || 'Homepage',
+         success: true,
+         score: primaryResult.finalScore,
+         grade: primaryResult.grade,
+         durationMs: duration
+       });
+    } catch(e) {}
+
     return new Response(JSON.stringify(primaryResult), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
@@ -476,6 +492,20 @@ export async function POST(request) {
 
   } catch (error) {
     console.error('THC AI Visibility Audit Error:', error);
+    try {
+       // Log failure
+       if (body?.url) {
+         const failedUrlObj = parseUrl(body.url);
+         logScan({
+           domain: failedUrlObj?.hostname || 'unknown',
+           url: body.url,
+           scanMode: body.mode || 'exact',
+           success: false,
+           errorMsg: error.message || 'Audit execution failed'
+         });
+       }
+    } catch(e) {}
+    
     return new Response(
       JSON.stringify({ error: error.message || 'Audit execution failed' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }

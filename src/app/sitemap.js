@@ -3,13 +3,13 @@ export default function sitemap() {
     {
       url: 'https://ai-visibility.thehubcontent.com',
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: 'daily',
       priority: 1,
     },
     {
       url: 'https://ai-visibility.thehubcontent.com/glossary',
       lastModified: new Date(),
-      changeFrequency: 'monthly',
+      changeFrequency: 'weekly',
       priority: 0.8,
     },
   ];
