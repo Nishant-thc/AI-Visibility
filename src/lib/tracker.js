@@ -11,7 +11,7 @@ function initializeDb() {
   }
 }
 
-export function logScan(scanData) {
+export async function logScan(scanData) {
   try {
     initializeDb();
     
@@ -46,14 +46,18 @@ export function logScan(scanData) {
     fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2), 'utf8');
 
     // Option B: Live Zero-Cost Database via Google Sheets
-    // If the webhook URL is set in Vercel environment variables, fire a non-blocking POST request
+    // If the webhook URL is set in Vercel environment variables, fire a POST request.
+    // MUST AWAIT in serverless environments so the function doesn't sleep before the request finishes.
     if (process.env.GOOGLE_SHEET_WEBHOOK) {
-      // Fire and forget (don't await) so it doesn't slow down the main audit API response
-      fetch(process.env.GOOGLE_SHEET_WEBHOOK, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(record)
-      }).catch(err => console.error('Webhook Error:', err));
+      try {
+        await fetch(process.env.GOOGLE_SHEET_WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(record)
+        });
+      } catch (err) {
+        console.error('Webhook Error:', err);
+      }
     }
 
     return record;

@@ -471,9 +471,9 @@ export async function POST(request) {
     const duration = Date.now() - startTime;
     console.log(`[Audit Complete] URL: ${primaryResult.url} | Score: ${primaryResult.finalScore} | Duration: ${duration}ms | IP: ${ip}`);
 
-    // Try logging to local db async without blocking request
+    // Await logging to ensure Vercel serverless doesn't terminate before webhook POST finishes
     try {
-       logScan({
+       await logScan({
          domain: primaryResult.domain,
          url: primaryResult.url,
          scanMode: mode,
@@ -496,7 +496,7 @@ export async function POST(request) {
        // Log failure
        if (body?.url) {
          const failedUrlObj = parseUrl(body.url);
-         logScan({
+         await logScan({
            domain: failedUrlObj?.hostname || 'unknown',
            url: body.url,
            scanMode: body.mode || 'exact',
