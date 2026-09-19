@@ -49,15 +49,23 @@ export async function logScan(scanData) {
     // If the webhook URL is set in Vercel environment variables, fire a POST request.
     // MUST AWAIT in serverless environments so the function doesn't sleep before the request finishes.
     if (process.env.GOOGLE_SHEET_WEBHOOK) {
+      console.log('Sending data to Google Sheets Webhook...');
       try {
-        await fetch(process.env.GOOGLE_SHEET_WEBHOOK, {
+        const res = await fetch(process.env.GOOGLE_SHEET_WEBHOOK, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(record)
         });
+        console.log(`Google Sheets Webhook Response Status: ${res.status}`);
+        if (!res.ok) {
+           const text = await res.text();
+           console.error('Webhook failed with response:', text);
+        }
       } catch (err) {
-        console.error('Webhook Error:', err);
+        console.error('Webhook Fetch Error:', err);
       }
+    } else {
+      console.log('Skipping Google Sheets: GOOGLE_SHEET_WEBHOOK environment variable is not set.');
     }
 
     return record;
