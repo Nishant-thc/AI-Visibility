@@ -44,6 +44,18 @@ export function logScan(scanData) {
     
     // Write back
     fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2), 'utf8');
+
+    // Option B: Live Zero-Cost Database via Google Sheets
+    // If the webhook URL is set in Vercel environment variables, fire a non-blocking POST request
+    if (process.env.GOOGLE_SHEET_WEBHOOK) {
+      // Fire and forget (don't await) so it doesn't slow down the main audit API response
+      fetch(process.env.GOOGLE_SHEET_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(record)
+      }).catch(err => console.error('Webhook Error:', err));
+    }
+
     return record;
   } catch (error) {
     console.error('Failed to log scan:', error);
