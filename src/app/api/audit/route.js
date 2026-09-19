@@ -40,6 +40,31 @@ function isPrivateIp(hostname) {
   return false;
 }
 
+function categorizeError(error) {
+  const msg = error.message ? error.message.toLowerCase() : '';
+  
+  if (msg.includes('timeout') || msg.includes('abort') || msg.includes('aborted')) {
+    return { category: '[TIMEOUT]', userMessage: 'The audit took too long. The website might be slow to respond or has a massive sitemap. Try scanning an Exact URL instead.' };
+  }
+  if (msg.includes('fetch failed') || msg.includes('network') || msg.includes('econnrefused') || msg.includes('enotfound')) {
+    return { category: '[NETWORK_ERROR]', userMessage: 'We couldn\'t reach the website. Please check if the URL is correct and the site is online.' };
+  }
+  if (msg.includes('403') || msg.includes('forbidden') || msg.includes('access denied')) {
+    return { category: '[ACCESS_DENIED]', userMessage: 'We were blocked from scanning this website. The site likely has strict bot-protection (like Cloudflare) enabled.' };
+  }
+  if (msg.includes('parse') || msg.includes('json') || msg.includes('invalid html')) {
+    return { category: '[PARSE_ERROR]', userMessage: 'We successfully fetched the page, but the data was malformed or couldn\'t be analyzed.' };
+  }
+  if (msg.includes('too many requests') || msg.includes('rate limit')) {
+    return { category: '[RATE_LIMIT]', userMessage: 'Too many requests. Please wait a minute before trying again.' };
+  }
+  if (msg.includes('invalid url') || msg.includes('private network')) {
+    return { category: '[INVALID_URL]', userMessage: 'The URL provided is invalid or unsupported.' };
+  }
+  
+  return { category: '[INTERNAL_ERROR]', userMessage: 'An unexpected error occurred during the audit. Please try again later.' };
+}
+
 function normalizeInputUrl(rawUrl) {
   if (!rawUrl) return null;
   let trimmed = rawUrl.trim();
@@ -491,7 +516,10 @@ export async function POST(request) {
     });
 
   } catch (error) {
-    console.error('THC AI Visibility Audit Error:', error);
+    const categorized = categorizeError(error);
+    const finalErrorMsg = `${categorized.category} ${categorized.userMessage}`;
+
+    console.error(`THC AI Visibility Audit Error: ${finalErrorMsg} (Raw: ${error.message})`);
     try {
        // Log failure
        if (body?.url) {
@@ -501,13 +529,13 @@ export async function POST(request) {
            url: body.url,
            scanMode: body.mode || 'exact',
            success: false,
-           errorMsg: error.message || 'Audit execution failed'
+           errorMsg: finalErrorMsg
          });
        }
     } catch(e) {}
     
     return new Response(
-      JSON.stringify({ error: error.message || 'Audit execution failed' }),
+      JSON.stringify({ error: categorized.userMessage, category: categorized.category }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }

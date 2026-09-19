@@ -1467,8 +1467,28 @@ export default function Home() {
               </form>
 
               {error && (
-                <div style={{ marginTop: '16px', padding: '12px 14px', background: 'var(--block-bg)', color: 'var(--block)', borderLeft: '3px solid var(--block)', borderRadius: '4px', fontSize: '13px' }}>
-                  {error}
+                <div style={{ 
+                  marginTop: '20px', 
+                  padding: '16px', 
+                  background: 'rgba(248, 81, 73, 0.1)', 
+                  border: '1px solid rgba(248, 81, 73, 0.4)', 
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '12px',
+                  animation: 'fadeIn 0.3s ease-out'
+                }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F85149" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '2px' }}>
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                  <div>
+                    <h4 style={{ margin: '0 0 6px 0', color: '#F85149', fontSize: '15px', fontWeight: '600' }}>Audit Failed</h4>
+                    <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '14px', lineHeight: '1.5' }}>
+                      {error}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
