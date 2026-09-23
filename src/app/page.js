@@ -1227,6 +1227,7 @@ export default function Home() {
 
     setError(null);
     setScanning(true);
+    setView('console');
     setDomainResults([]);
 
     try {

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 export default function AuditInputBlock({
   pageType = 'Homepage',
@@ -13,7 +12,6 @@ export default function AuditInputBlock({
 }) {
   const [inputUrl, setInputUrl] = useState('');
   const [scanMode, setScanMode] = useState('exact');
-  const router = useRouter();
 
   const handleAuditSubmit = (targetUrl) => {
     const rawUrl = targetUrl || inputUrl;
@@ -25,7 +23,7 @@ export default function AuditInputBlock({
     }
 
     const consolePath = `/?url=${encodeURIComponent(cleanUrl)}&mode=${scanMode}&pageType=${encodeURIComponent(pageType)}&autoScan=true#console`;
-    router.push(consolePath);
+    window.location.href = consolePath;
   };
 
   const handleSubmit = (e) => {
