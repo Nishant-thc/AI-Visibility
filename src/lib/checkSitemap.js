@@ -49,27 +49,76 @@ export async function checkSitemap(domain, declaredUrl, auditedUrl, robotsData) 
           if (isSitemapIndex) {
             // Extract child sitemaps
             const locMatches = text.match(/<loc>\s*(.*?)\s*<\/loc>/gi) || [];
-            childSitemaps = locMatches.map(m => m.replace(/<\/?loc>/gi, '').trim());
+            childSitemaps = locMatches
+              .map(m => m.replace(/<\/?loc>/gi, '').replace(/<!\[CDATA\[/g, '').replace(/\]\]>/g, '').trim())
+              .filter(u => u.length > 0);
 
-            // Fetch the first child sitemap to sample real content URLs
             if (childSitemaps.length > 0) {
-              try {
-                const childRes = await fetch(childSitemaps[0], { signal: AbortSignal.timeout(5000) });
-                if (childRes.ok) {
-                  const childText = await childRes.text();
-                  const childLocs = childText.match(/<loc>\s*(.*?)\s*<\/loc>/gi) || [];
-                  sampleUrls = childLocs.map(m => m.replace(/<\/?loc>/gi, '').trim()).slice(0, 8);
-                  urlCount = childSitemaps.length * Math.max(1, childLocs.length); // estimate
-                }
-              } catch (e) {
+              const allUrlsSet = new Set();
+              const childPromises = childSitemaps.slice(0, 25).map(async (childUrl) => {
+                try {
+                  const childRes = await fetch(childUrl, {
+                    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; THC-AiVisibilityBot/1.0)' },
+                    signal: AbortSignal.timeout(5000)
+                  });
+                  if (childRes.ok) {
+                    const childText = await childRes.text();
+                    const childLocs = childText.match(/<loc>\s*(.*?)\s*<\/loc>/gi) || [];
+                    const urls = childLocs
+                      .map(m => m.replace(/<\/?loc>/gi, '').replace(/<!\[CDATA\[/g, '').replace(/\]\]>/g, '').trim())
+                      .filter(u => u.startsWith('http'));
+
+                    const lastmodMatches = childText.match(/<lastmod>\s*(.*?)\s*<\/lastmod>/gi) || [];
+                    const now = Date.now();
+                    const sixMonthsAgo = now - (180 * 24 * 60 * 60 * 1000);
+
+                    lastmodMatches.forEach(lm => {
+                      const dateStr = lm.replace(/<\/?lastmod>/gi, '').trim();
+                      const parsedDate = Date.parse(dateStr);
+                      if (!isNaN(parsedDate)) {
+                        if (parsedDate > sixMonthsAgo) {
+                          lastmodFreshness.freshCount++;
+                        } else {
+                          lastmodFreshness.staleCount++;
+                        }
+                      }
+                    });
+
+                    return urls;
+                  }
+                } catch (e) {}
+                return [];
+              });
+
+              const childResults = await Promise.all(childPromises);
+              childResults.forEach(urls => {
+                urls.forEach(u => allUrlsSet.add(u));
+              });
+
+              const allUrls = Array.from(allUrlsSet);
+              urlCount = allUrls.length;
+              hasLastMod = (lastmodFreshness.freshCount + lastmodFreshness.staleCount) > 0;
+              lastmodFreshness.missingCount = Math.max(0, urlCount - (lastmodFreshness.freshCount + lastmodFreshness.staleCount));
+
+              if (urlCount > 0) {
+                sampleUrls = allUrls.slice(0, 10);
+              } else {
                 sampleUrls = childSitemaps.slice(0, 8);
-                urlCount = childSitemaps.length;
+              }
+
+              if (auditedUrl) {
+                const normalizedAudited = auditedUrl.replace(/\/$/, '').toLowerCase();
+                auditedUrlFound = allUrls.some(u => u.replace(/\/$/, '').toLowerCase() === normalizedAudited);
               }
             }
           } else {
             // Standard urlset
             const locMatches = text.match(/<loc>\s*(.*?)\s*<\/loc>/gi) || [];
-            const allUrls = locMatches.map(m => m.replace(/<\/?loc>/gi, '').trim());
+            const allUrls = Array.from(new Set(
+              locMatches
+                .map(m => m.replace(/<\/?loc>/gi, '').replace(/<!\[CDATA\[/g, '').replace(/\]\]>/g, '').trim())
+                .filter(u => u.startsWith('http'))
+            ));
             urlCount = allUrls.length;
             sampleUrls = allUrls.slice(0, 10);
 

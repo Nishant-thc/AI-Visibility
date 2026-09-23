@@ -496,13 +496,29 @@ export async function POST(request) {
     const duration = Date.now() - startTime;
     console.log(`[Audit Complete] URL: ${primaryResult.url} | Score: ${primaryResult.finalScore} | Duration: ${duration}ms | IP: ${ip}`);
 
+    // Dynamic classification helper for Google Sheets tagging
+    const derivedPageType = body.pageType || (() => {
+      try {
+        const u = new URL(primaryResult.url);
+        const p = u.pathname.toLowerCase();
+        if (p === '/' || p === '' || p === '/index.html') return 'Homepage';
+        if (p.includes('/category/') || p.includes('/collections/') || p.includes('/shop/') || p.includes('/c/')) return 'Category';
+        if (p.includes('/blog/') || p.includes('/blogs/') || p.includes('/news/') || p.includes('/article/') || p.includes('/post/') || p.includes('/resources/')) return 'Article';
+        if (p.includes('/p/') || p.includes('/product/') || p.includes('/products/') || p.includes('/item/')) return 'Product';
+        if (p.includes('/service/') || p.includes('/services/') || p.includes('/solution/') || p.includes('/solutions/')) return 'Service';
+        return 'Landing Page';
+      } catch(e) {
+        return 'Homepage';
+      }
+    })();
+
     // Await logging to ensure Vercel serverless doesn't terminate before webhook POST finishes
     try {
        await logScan({
          domain: primaryResult.domain,
          url: primaryResult.url,
          scanMode: mode,
-         pageType: body.pageType || 'Homepage',
+         pageType: derivedPageType,
          success: true,
          score: primaryResult.finalScore,
          grade: primaryResult.grade,

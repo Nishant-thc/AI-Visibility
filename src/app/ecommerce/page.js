@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import Footer from '../components/Footer';
+import AuditInputBlock from '../components/AuditInputBlock';
 
 export const metadata = {
   title: 'AI Visibility for Ecommerce | Will Your Products Appear in AI Shopping Answers? | The Hub Content',
-  description: 'Ecommerce brands are losing sales to AI shopping assistants that can\'t find their product pages. Run a free AI Visibility audit and see exactly why your store is invisible to ChatGPT, Perplexity, and Google AI Overviews.',
+  description: 'Ecommerce brands are losing sales to AI shopping assistants that can\'t find their product pages. Run a free AI Visibility audit and see why your store is invisible to ChatGPT, Perplexity, and Google AI Overviews.',
   robots: 'index, follow',
   metadataBase: new URL('https://ai-visibility.thehubcontent.com'),
   alternates: { canonical: '/ecommerce' },
@@ -59,42 +60,51 @@ export default function EcommerceLandingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <div style={{ minHeight: '100vh', background: 'var(--bg, #0d0e12)', color: 'var(--ink, #e8eaf0)', fontFamily: 'var(--font-sans, system-ui)' }}>
+      <div style={{ minHeight: '100vh', background: '#F3F4F7', color: '#14171C', fontFamily: 'var(--font-sans, system-ui)' }}>
 
         {/* ── NAV ─────────────────────────────────────────────────── */}
-        <nav style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: 'rgba(13,14,18,0.92)', backdropFilter: 'blur(12px)', zIndex: 100 }}>
+        <nav style={{ borderBottom: '1px solid #DEE1E7', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: 'rgba(243,244,247,0.95)', backdropFilter: 'blur(12px)', zIndex: 100 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
             <img src="/logo_processed.png" alt="AI Visibility Checker" width={28} height={28} style={{ borderRadius: '50%' }} />
-            <span style={{ fontFamily: 'var(--font-serif, Georgia)', fontWeight: 600, color: '#fff', fontSize: '15px' }}>AI Visibility Checker</span>
+            <span style={{ fontFamily: 'var(--font-serif, Georgia)', fontWeight: 600, color: '#14171C', fontSize: '15px' }}>AI Visibility Checker</span>
           </Link>
-          <Link href="/" style={{ fontSize: '13px', color: 'var(--ink-soft, #8b8fa8)', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.12)', padding: '7px 16px', borderRadius: '6px', transition: 'all 0.15s' }}>
-            ← Run Free Audit
-          </Link>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <Link href="/" style={{ fontSize: '13px', color: '#565E6D', textDecoration: 'none', border: '1px solid #DEE1E7', padding: '7px 16px', borderRadius: '6px', background: '#FFFFFF' }}>
+              Home
+            </Link>
+          </div>
         </nav>
 
         {/* ── HERO ────────────────────────────────────────────────── */}
-        <header style={{ maxWidth: '820px', margin: '0 auto', padding: '80px 24px 60px', textAlign: 'center' }}>
-          <div style={{ display: 'inline-block', background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.3)', borderRadius: '20px', padding: '6px 14px', fontSize: '12px', color: '#818cf8', fontFamily: 'var(--font-mono, monospace)', letterSpacing: '0.08em', marginBottom: '24px' }}>
+        <header style={{ maxWidth: '840px', margin: '0 auto', padding: '60px 24px 40px', textAlign: 'center' }}>
+          <div style={{ display: 'inline-block', background: 'rgba(79, 70, 229, 0.08)', border: '1px solid rgba(79, 70, 229, 0.2)', borderRadius: '20px', padding: '6px 16px', fontSize: '12px', fontWeight: 700, color: '#4F46E5', fontFamily: 'var(--font-mono, monospace)', letterSpacing: '0.08em', marginBottom: '20px' }}>
             ECOMMERCE · AEO AUDIT
           </div>
-          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)', fontFamily: 'var(--font-serif, Georgia)', fontWeight: 600, lineHeight: 1.15, marginBottom: '20px', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.25rem)', fontFamily: 'var(--font-serif, Georgia)', fontWeight: 600, lineHeight: 1.15, marginBottom: '18px', color: '#14171C', letterSpacing: '-0.02em' }}>
             AI Visibility for<br />
-            <span style={{ background: 'linear-gradient(135deg, #818cf8 0%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Ecommerce Brands</span>
+            <span style={{ color: '#4F46E5' }}>Ecommerce Brands</span>
           </h1>
-          <p style={{ fontSize: '18px', color: 'var(--ink-soft, #8b8fa8)', lineHeight: 1.7, maxWidth: '600px', margin: '0 auto 36px' }}>
+          <p style={{ fontSize: '17px', color: '#4B5563', lineHeight: 1.7, maxWidth: '640px', margin: '0 auto 36px' }}>
             Shoppers are asking ChatGPT, Perplexity, and Google AI Overviews which products to buy. If your store isn't indexed by AI crawlers, you're invisible to them — and losing sales to competitors who are.
           </p>
-          <Link href="/" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', color: '#fff', padding: '14px 32px', borderRadius: '8px', fontWeight: 600, fontSize: '15px', textDecoration: 'none', boxShadow: '0 4px 20px rgba(99,102,241,0.35)' }}>
-            Audit Your Ecommerce Site Free →
-          </Link>
+
+          {/* Embedded Interactive Audit Form */}
+          <AuditInputBlock
+            pageType="Ecommerce"
+            buttonText="Audit Ecommerce Store Free →"
+            placeholder="https://your-store.com"
+            quickPicks={['allbirds.com', 'gymshark.com', 'warbyparker.com', 'curology.com']}
+            accentGradient="linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)"
+            badgeText="ECOMMERCE AEO AUDIT PROBE"
+          />
         </header>
 
         {/* ── SIGNALS GRID ────────────────────────────────────────── */}
-        <section style={{ maxWidth: '900px', margin: '0 auto', padding: '0 24px 80px' }}>
-          <h2 style={{ textAlign: 'center', fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.6rem', marginBottom: '40px', fontWeight: 600 }}>
+        <section style={{ maxWidth: '920px', margin: '0 auto', padding: '20px 24px 60px' }}>
+          <h2 style={{ textAlign: 'center', fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.6rem', marginBottom: '36px', fontWeight: 600, color: '#14171C' }}>
             What AI Shopping Assistants Check on Your Store
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: '20px' }}>
             {[
               { icon: '🤖', title: 'AI Crawler Access', body: 'Is OAI-SearchBot (ChatGPT), PerplexityBot, and ClaudeBot allowed to index your product pages? Blocked bots = zero citations.' },
               { icon: '🏷️', title: 'Product Schema (JSON-LD)', body: 'Product, Offer, and AggregateRating markup tells AI systems exactly what you sell, at what price, and with what social proof.' },
@@ -103,41 +113,47 @@ export default function EcommerceLandingPage() {
               { icon: '📖', title: 'Readability Score', body: 'Flesch Reading Ease 60–80 is optimal for AI extraction. Dense, technical prose is harder for LLMs to summarize and cite accurately.' },
               { icon: '🔗', title: 'Internal Link Graph', body: 'AI systems traverse your internal links to discover and build context on your brand. Orphaned product pages are rarely cited.' },
             ].map((card) => (
-              <div key={card.title} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '24px' }}>
+              <div key={card.title} style={{ background: '#FFFFFF', border: '1px solid #DEE1E7', borderRadius: '12px', padding: '24px', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
                 <div style={{ fontSize: '28px', marginBottom: '12px' }}>{card.icon}</div>
-                <h3 style={{ fontWeight: 600, fontSize: '15px', marginBottom: '8px', color: '#e8eaf0' }}>{card.title}</h3>
-                <p style={{ fontSize: '13px', color: 'var(--ink-soft, #8b8fa8)', lineHeight: 1.65, margin: 0 }}>{card.body}</p>
+                <h3 style={{ fontWeight: 600, fontSize: '15px', marginBottom: '8px', color: '#14171C' }}>{card.title}</h3>
+                <p style={{ fontSize: '13.5px', color: '#4B5563', lineHeight: 1.65, margin: 0 }}>{card.body}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* ── FAQ SECTION ─────────────────────────────────────────── */}
-        <section style={{ maxWidth: '760px', margin: '0 auto', padding: '0 24px 80px' }}>
-          <h2 style={{ fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.6rem', marginBottom: '40px', fontWeight: 600, textAlign: 'center' }}>
+        <section style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px 80px' }}>
+          <h2 style={{ fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.6rem', marginBottom: '36px', fontWeight: 600, textAlign: 'center', color: '#14171C' }}>
             Ecommerce AI Visibility: Questions &amp; Answers
           </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {faqs.map((faq, i) => (
-              <div key={i} style={{ borderLeft: '3px solid rgba(99,102,241,0.4)', paddingLeft: '20px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '10px', color: '#e8eaf0', lineHeight: 1.45 }}>{faq.q}</h3>
-                <p style={{ fontSize: '14px', color: 'var(--ink-soft, #8b8fa8)', lineHeight: 1.75, margin: 0 }}>{faq.a}</p>
+              <div key={i} style={{ background: '#FFFFFF', border: '1px solid #DEE1E7', borderRadius: '12px', padding: '24px', borderLeft: '4px solid #4F46E5', boxShadow: '0 2px 6px rgba(0,0,0,0.02)' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '10px', color: '#14171C', lineHeight: 1.45 }}>{faq.q}</h3>
+                <p style={{ fontSize: '14px', color: '#374151', lineHeight: 1.75, margin: 0 }}>{faq.a}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* ── CTA BANNER ──────────────────────────────────────────── */}
-        <section style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.08) 100%)', border: '1px solid rgba(99,102,241,0.2)', borderRadius: '16px', maxWidth: '760px', margin: '0 auto 80px', padding: '48px 32px', textAlign: 'center' }}>
-          <h2 style={{ fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.8rem', fontWeight: 600, marginBottom: '16px' }}>
+        <section style={{ background: '#FFFFFF', border: '1px solid #DEE1E7', borderRadius: '16px', maxWidth: '800px', margin: '0 auto 80px', padding: '48px 32px', textAlign: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+          <h2 style={{ fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.8rem', fontWeight: 600, marginBottom: '16px', color: '#14171C' }}>
             Is Your Ecommerce Store AI-Ready?
           </h2>
-          <p style={{ color: 'var(--ink-soft, #8b8fa8)', fontSize: '15px', marginBottom: '28px', lineHeight: 1.65 }}>
+          <p style={{ color: '#4B5563', fontSize: '15px', marginBottom: '28px', lineHeight: 1.65, maxWidth: '580px', margin: '0 auto 28px' }}>
             Run a free 80-metric AI Visibility audit on any product URL or store homepage in under 60 seconds.
           </p>
-          <Link href="/" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', color: '#fff', padding: '14px 32px', borderRadius: '8px', fontWeight: 600, fontSize: '15px', textDecoration: 'none' }}>
-            Free Ecommerce AI Audit →
-          </Link>
+
+          <AuditInputBlock
+            pageType="Ecommerce"
+            buttonText="Free Ecommerce AI Audit →"
+            placeholder="https://your-store.com"
+            quickPicks={[]}
+            accentGradient="linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)"
+            badgeText="INSTANT AUDIT PROBE"
+          />
         </section>
 
         <Footer />

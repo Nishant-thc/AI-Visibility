@@ -1,15 +1,16 @@
 import Link from 'next/link';
 import Footer from '../components/Footer';
+import AuditInputBlock from '../components/AuditInputBlock';
 
 export const metadata = {
-  title: 'AI Visibility for B2B Companies | Are AI Assistants Recommending Your Brand? | The Hub Content',
-  description: 'B2B buyers now ask ChatGPT, Perplexity, and Claude for vendor recommendations. If your brand isn\'t indexed by AI crawlers, you\'re missing the highest-intent decision-stage buyers. Run a free AI Visibility audit.',
+  title: 'AI Visibility for B2B & SaaS | Will AI Suggest Your Solution to Enterprise Buyers? | The Hub Content',
+  description: 'Enterprise buyers use ChatGPT and Perplexity to research SaaS and B2B solutions. Find out if your website is indexed, cited, and recommended by AI answer engines with a free AI Visibility audit.',
   robots: 'index, follow',
   metadataBase: new URL('https://ai-visibility.thehubcontent.com'),
   alternates: { canonical: '/b2b' },
   openGraph: {
-    title: 'AI Visibility for B2B Companies | The Hub Content',
-    description: 'Are AI assistants recommending your B2B brand? Run a free audit to find out.',
+    title: 'AI Visibility for B2B & SaaS | The Hub Content',
+    description: 'Audit whether ChatGPT, Claude, and Perplexity recommend your SaaS or B2B products to enterprise buyers.',
     url: 'https://ai-visibility.thehubcontent.com/b2b',
     type: 'website',
   },
@@ -17,28 +18,28 @@ export const metadata = {
 
 const faqs = [
   {
-    q: 'Why is my B2B SaaS product not being recommended by ChatGPT or Perplexity?',
-    a: `B2B SaaS companies are often invisible to AI assistants because their websites rely heavily on JavaScript-rendered content. Most AI crawlers — including OAI-SearchBot and PerplexityBot — parse only the raw HTML response, meaning any product features, pricing, or comparison content loaded via React, Vue, or Angular after page load is completely invisible. The fix is ensuring your core value proposition, key features, and use case descriptions are present in the server-rendered HTML, not just loaded client-side.`,
+    q: 'Why is my B2B SaaS product missing when buyers ask ChatGPT for recommendations?',
+    a: `Enterprise buyers increasingly use ChatGPT, Claude, and Perplexity for software vendor discovery. If your site blocks OAI-SearchBot or Claude-SearchBot in robots.txt, or if your core product messaging is hidden behind client-side JavaScript, AI answer engines cannot read or cite your product capabilities. Additionally, B2B sites without clear Schema.org Organization, SoftwareApplication, and Product JSON-LD markup lack the structured entity signals required for AI systems to accurately categorize software offerings.`,
   },
   {
-    q: 'What content types help B2B brands appear in AI-generated vendor lists?',
-    a: `AI assistants compile vendor recommendation lists from multiple signals: (1) Explicit "best of" and comparison editorial content from third-party review sites like G2, Capterra, and TrustRadius. (2) Your own comparison and alternative pages (e.g., "/vs-competitor" or "/alternatives"). (3) Use-case-specific landing pages with clear entity definitions (What is [Your Tool]? Who uses it?). (4) Well-structured FAQ content using FAQPage schema that directly answers buyer questions. (5) Strong Organization schema with defined service areas, industries served, and product categories.`,
+    q: 'What structured data is essential for B2B software and service companies?',
+    a: `B2B companies require three foundational schema types: (1) Organization schema with sameAs links to Crunchbase, LinkedIn, G2, and Wikidata to anchor entity identity; (2) SoftwareApplication or Service schema detailing operatingSystems, applicationCategory, pricing ranges, and key features; and (3) Article or TechArticle schema on documentation and whitepapers. These structured signals allow RAG vector databases to parse and attribute software capabilities without hallucinating features.`,
   },
   {
-    q: 'How does AI visibility affect B2B buyer journey and pipeline?',
-    a: `The B2B buyer journey increasingly begins with an AI assistant query rather than a Google search. Analysts and decision-makers ask ChatGPT or Perplexity questions like "What is the best CRM for mid-market B2B sales teams?" or "Compare [Category] vendors for enterprise use." If your brand appears in AI-generated answers at this discovery stage, it enters the consideration set before any human sales interaction. Brands invisible to AI assistants are being screened out before they even have the chance to engage buyers.`,
+    q: 'How does /llms.txt help B2B SaaS documentation get cited by AI?',
+    a: `An /llms.txt file provides AI crawlers with a clean, Markdown-formatted index of your key documentation, product features, and pricing details. Instead of crawling hundreds of heavy HTML pages laden with navigation chrome, LLMs read /llms.txt to fetch precise markdown docs. This reduces token consumption by up to 80% and ensures AI answer engines ingest your most authoritative product specifications when answering buyer queries.`,
   },
   {
-    q: 'What structured data schema is most important for B2B SaaS?',
-    a: `For B2B SaaS and services companies, the most impactful Schema.org types are: (1) Organization — defining your company, founding date, service area, and industry. (2) SoftwareApplication — product name, description, applicationCategory, operatingSystem, pricing. (3) FAQPage — answering the exact questions your buyers ask AI assistants. (4) HowTo — step-by-step guides that AI assistants love to surface as featured answers. (5) Review and AggregateRating — social proof signals that increase citation confidence for AI systems.`,
+    q: 'Should B2B companies block GPTBot or ClaudeBot?',
+    a: `Blocking GPTBot (OpenAI) or ClaudeBot (Anthropic) stops foundation model creators from scraping your content to train future LLMs. However, you should NEVER block OAI-SearchBot, Claude-SearchBot, or PerplexityBot if you want live citations in search answers. The recommended configuration for B2B brands is to disallow training bots while explicitly allowing retrieval search bots in robots.txt.`,
   },
   {
-    q: 'Should my B2B company block or allow AI crawlers?',
-    a: `The answer depends on the specific crawler. GPTBot is used to train OpenAI's models — you can block it if you don't want your proprietary content used for training. However, blocking OAI-SearchBot (which powers ChatGPT's real-time web search) will remove your company from ChatGPT's live citation results entirely. Similarly, blocking PerplexityBot removes your brand from Perplexity's answer index. For most B2B companies, the optimal strategy is to allow all search-focused AI bots while blocking training-only bots.`,
+    q: 'How do technical whitepapers and documentation impact AI visibility?',
+    a: `LLMs heavily favor technical documentation, API specs, and whitepapers when generating detailed comparison answers for enterprise queries. To maximize extractability: (1) maintain a clean sequential heading structure (H1→H2→H3 without level skips); (2) keep Flesch Reading Ease in the 55-75 range for clear semantic chunking; (3) ensure text is available in raw HTML without requiring JavaScript execution; and (4) serve pages with server TTFB under 400ms to prevent bot timeouts.`,
   },
   {
-    q: 'How do I measure my B2B brand\'s AI visibility over time?',
-    a: `To track AI visibility trends, run monthly audits using this tool on your homepage, key product pages, and comparison pages. Track changes in your AI Visibility Score across the four categories: Crawler Access, Structured Data, Content Extractability, and Technical Performance. Additionally, manually query ChatGPT, Perplexity, and Claude with your target buyer questions monthly to observe whether your brand appears in generated answers. Document which pages are cited when your brand does appear — these are your highest-performing AI visibility assets to protect and expand.`,
+    q: 'What is the role of entity linking (sameAs) in B2B AI visibility?',
+    a: `Entity linking connects your domain to established knowledge bases. When your Organization schema includes sameAs links pointing to Wikidata entries, Crunchbase profiles, G2 listings, and official social channels, AI models can cross-verify your company's existence, market category, and reputation. Without sameAs entity links, AI models treat your brand as an unverified web string, reducing recommendation confidence.`,
   },
 ];
 
@@ -52,92 +53,107 @@ const schema = {
   })),
 };
 
-export default function B2BLandingPage() {
+export default function B2bLandingPage() {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <div style={{ minHeight: '100vh', background: 'var(--bg, #0d0e12)', color: 'var(--ink, #e8eaf0)', fontFamily: 'var(--font-sans, system-ui)' }}>
+      <div style={{ minHeight: '100vh', background: '#F3F4F7', color: '#14171C', fontFamily: 'var(--font-sans, system-ui)' }}>
 
         {/* ── NAV ─────────────────────────────────────────────────── */}
-        <nav style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: 'rgba(13,14,18,0.92)', backdropFilter: 'blur(12px)', zIndex: 100 }}>
+        <nav style={{ borderBottom: '1px solid #DEE1E7', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: 'rgba(243,244,247,0.95)', backdropFilter: 'blur(12px)', zIndex: 100 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
             <img src="/logo_processed.png" alt="AI Visibility Checker" width={28} height={28} style={{ borderRadius: '50%' }} />
-            <span style={{ fontFamily: 'var(--font-serif, Georgia)', fontWeight: 600, color: '#fff', fontSize: '15px' }}>AI Visibility Checker</span>
+            <span style={{ fontFamily: 'var(--font-serif, Georgia)', fontWeight: 600, color: '#14171C', fontSize: '15px' }}>AI Visibility Checker</span>
           </Link>
-          <Link href="/" style={{ fontSize: '13px', color: 'var(--ink-soft, #8b8fa8)', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.12)', padding: '7px 16px', borderRadius: '6px' }}>
-            ← Run Free Audit
-          </Link>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <Link href="/" style={{ fontSize: '13px', color: '#565E6D', textDecoration: 'none', border: '1px solid #DEE1E7', padding: '7px 16px', borderRadius: '6px', background: '#FFFFFF' }}>
+              Home
+            </Link>
+          </div>
         </nav>
 
         {/* ── HERO ────────────────────────────────────────────────── */}
-        <header style={{ maxWidth: '820px', margin: '0 auto', padding: '80px 24px 60px', textAlign: 'center' }}>
-          <div style={{ display: 'inline-block', background: 'rgba(20,184,166,0.12)', border: '1px solid rgba(20,184,166,0.3)', borderRadius: '20px', padding: '6px 14px', fontSize: '12px', color: '#2dd4bf', fontFamily: 'var(--font-mono, monospace)', letterSpacing: '0.08em', marginBottom: '24px' }}>
-            B2B · VENDOR RECOMMENDATION AUDIT
+        <header style={{ maxWidth: '840px', margin: '0 auto', padding: '60px 24px 40px', textAlign: 'center' }}>
+          <div style={{ display: 'inline-block', background: 'rgba(13, 148, 136, 0.08)', border: '1px solid rgba(13, 148, 136, 0.2)', borderRadius: '20px', padding: '6px 16px', fontSize: '12px', fontWeight: 700, color: '#0D9488', fontFamily: 'var(--font-mono, monospace)', letterSpacing: '0.08em', marginBottom: '20px' }}>
+            B2B &amp; SAAS · AEO AUDIT
           </div>
-          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)', fontFamily: 'var(--font-serif, Georgia)', fontWeight: 600, lineHeight: 1.15, marginBottom: '20px', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.25rem)', fontFamily: 'var(--font-serif, Georgia)', fontWeight: 600, lineHeight: 1.15, marginBottom: '18px', color: '#14171C', letterSpacing: '-0.02em' }}>
             AI Visibility for<br />
-            <span style={{ background: 'linear-gradient(135deg, #2dd4bf 0%, #38bdf8 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>B2B Companies</span>
+            <span style={{ color: '#0D9488' }}>B2B &amp; SaaS Companies</span>
           </h1>
-          <p style={{ fontSize: '18px', color: 'var(--ink-soft, #8b8fa8)', lineHeight: 1.7, maxWidth: '600px', margin: '0 auto 36px' }}>
-            Your buyers are asking ChatGPT, Perplexity, and Claude for vendor recommendations — right now. If your brand isn't indexed by AI crawlers, you're invisible at the highest-intent moment in the B2B funnel.
+          <p style={{ fontSize: '17px', color: '#4B5563', lineHeight: 1.7, maxWidth: '640px', margin: '0 auto 36px' }}>
+            Enterprise buyers are asking ChatGPT, Claude, and Perplexity to recommend vendor solutions. If your site isn't indexed by AI search bots, your competitors are capturing those high-intent leads.
           </p>
-          <Link href="/" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #0d9488 0%, #0284c7 100%)', color: '#fff', padding: '14px 32px', borderRadius: '8px', fontWeight: 600, fontSize: '15px', textDecoration: 'none', boxShadow: '0 4px 20px rgba(20,184,166,0.3)' }}>
-            Audit Your B2B Brand Free →
-          </Link>
+
+          {/* Embedded Interactive Audit Form */}
+          <AuditInputBlock
+            pageType="B2B"
+            buttonText="Audit B2B SaaS Site Free →"
+            placeholder="https://your-saas.com"
+            quickPicks={['stripe.com', 'hubspot.com', 'notion.so', 'datadoghq.com']}
+            accentGradient="linear-gradient(135deg, #0D9488 0%, #0284C7 100%)"
+            badgeText="B2B AEO AUDIT PROBE"
+          />
         </header>
 
         {/* ── SIGNALS GRID ────────────────────────────────────────── */}
-        <section style={{ maxWidth: '900px', margin: '0 auto', padding: '0 24px 80px' }}>
-          <h2 style={{ textAlign: 'center', fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.6rem', marginBottom: '40px', fontWeight: 600 }}>
-            Why B2B Brands Fail the AI Visibility Test
+        <section style={{ maxWidth: '920px', margin: '0 auto', padding: '20px 24px 60px' }}>
+          <h2 style={{ textAlign: 'center', fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.6rem', marginBottom: '36px', fontWeight: 600, color: '#14171C' }}>
+            Why B2B Brands Lose AI Recommendations
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: '20px' }}>
             {[
-              { icon: '🚫', title: 'JS-Gated Content', body: 'SaaS platforms often render features, pricing, and case studies via JavaScript. AI crawlers see an empty shell — not your product.' },
-              { icon: '🏢', title: 'Missing Organization Schema', body: 'Without Organization JSON-LD defining your company name, industry, and service areas, AI systems can\'t confidently categorize your brand.' },
-              { icon: '❓', title: 'No FAQ / Q&A Content', body: 'B2B buyers ask specific questions. Without FAQPage schema, your answers aren\'t surfaced by AI assistants as direct responses.' },
-              { icon: '📊', title: 'No Comparison Pages', body: 'AI systems compile vendor comparisons from existing comparison content. "/vs-competitor" pages are among the highest-cited B2B page types.' },
-              { icon: '🤖', title: 'Blocked AI Crawlers', body: 'Many enterprise sites block all bots for security. This also blocks OAI-SearchBot and PerplexityBot — eliminating all AI citation potential.' },
-              { icon: '⚡', title: 'Slow Server Response', body: 'AI crawlers operating at scale skip slow pages. A TTFB over 600ms significantly reduces crawl depth and citation frequency for B2B sites.' },
+              { icon: '🔒', title: 'Robots.txt Misconfiguration', body: 'Blocking OAI-SearchBot or Claude-SearchBot removes your product docs from live AI buyer recommendations.' },
+              { icon: '🏢', title: 'Missing Organization Schema', body: 'Without JSON-LD Organization & SoftwareApplication schema, AI engines cannot verify your product category or capabilities.' },
+              { icon: '🔗', title: 'Weak Entity Linking (sameAs)', body: 'Failing to link your brand to Crunchbase, G2, or Wikidata reduces LLM confidence when recommending your SaaS.' },
+              { icon: '⚡', title: 'Doc Server Response Latency', body: 'AI fetch bots operate under strict 5-second timeouts. Slow documentation servers trigger silent crawl drop-offs.' },
+              { icon: '📄', title: 'Client-Side JS Render Gaps', body: 'Product feature pages rendered via React or Vue SPA hydrations without SSR are completely blank to AI crawlers.' },
+              { icon: '🗺️', title: 'No /llms.txt Index', body: 'Lacking an /llms.txt file forces AI models to parse heavy HTML, leading to truncated context and missing feature citations.' },
             ].map((card) => (
-              <div key={card.title} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '24px' }}>
+              <div key={card.title} style={{ background: '#FFFFFF', border: '1px solid #DEE1E7', borderRadius: '12px', padding: '24px', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
                 <div style={{ fontSize: '28px', marginBottom: '12px' }}>{card.icon}</div>
-                <h3 style={{ fontWeight: 600, fontSize: '15px', marginBottom: '8px', color: '#e8eaf0' }}>{card.title}</h3>
-                <p style={{ fontSize: '13px', color: 'var(--ink-soft, #8b8fa8)', lineHeight: 1.65, margin: 0 }}>{card.body}</p>
+                <h3 style={{ fontWeight: 600, fontSize: '15px', marginBottom: '8px', color: '#14171C' }}>{card.title}</h3>
+                <p style={{ fontSize: '13.5px', color: '#4B5563', lineHeight: 1.65, margin: 0 }}>{card.body}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* ── FAQ SECTION ─────────────────────────────────────────── */}
-        <section style={{ maxWidth: '760px', margin: '0 auto', padding: '0 24px 80px' }}>
-          <h2 style={{ fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.6rem', marginBottom: '40px', fontWeight: 600, textAlign: 'center' }}>
-            B2B AI Visibility: Questions &amp; Answers
+        <section style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px 80px' }}>
+          <h2 style={{ fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.6rem', marginBottom: '36px', fontWeight: 600, textAlign: 'center', color: '#14171C' }}>
+            B2B &amp; SaaS AI Visibility: Questions &amp; Answers
           </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {faqs.map((faq, i) => (
-              <div key={i} style={{ borderLeft: '3px solid rgba(20,184,166,0.4)', paddingLeft: '20px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '10px', color: '#e8eaf0', lineHeight: 1.45 }}>{faq.q}</h3>
-                <p style={{ fontSize: '14px', color: 'var(--ink-soft, #8b8fa8)', lineHeight: 1.75, margin: 0 }}>{faq.a}</p>
+              <div key={i} style={{ background: '#FFFFFF', border: '1px solid #DEE1E7', borderRadius: '12px', padding: '24px', borderLeft: '4px solid #0D9488', boxShadow: '0 2px 6px rgba(0,0,0,0.02)' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '10px', color: '#14171C', lineHeight: 1.45 }}>{faq.q}</h3>
+                <p style={{ fontSize: '14px', color: '#374151', lineHeight: 1.75, margin: 0 }}>{faq.a}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* ── CTA BANNER ──────────────────────────────────────────── */}
-        <section style={{ background: 'linear-gradient(135deg, rgba(20,184,166,0.1) 0%, rgba(56,189,248,0.06) 100%)', border: '1px solid rgba(20,184,166,0.2)', borderRadius: '16px', maxWidth: '760px', margin: '0 auto 80px', padding: '48px 32px', textAlign: 'center' }}>
-          <h2 style={{ fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.8rem', fontWeight: 600, marginBottom: '16px' }}>
-            Is Your B2B Brand Showing Up in AI Answers?
+        <section style={{ background: '#FFFFFF', border: '1px solid #DEE1E7', borderRadius: '16px', maxWidth: '800px', margin: '0 auto 80px', padding: '48px 32px', textAlign: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+          <h2 style={{ fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.8rem', fontWeight: 600, marginBottom: '16px', color: '#14171C' }}>
+            Is Your B2B SaaS Site AI-Ready?
           </h2>
-          <p style={{ color: 'var(--ink-soft, #8b8fa8)', fontSize: '15px', marginBottom: '28px', lineHeight: 1.65 }}>
-            Audit any B2B landing page, product page, or case study against 80+ AI visibility metrics. Free. Instant. No sign-up.
+          <p style={{ color: '#4B5563', fontSize: '15px', marginBottom: '28px', lineHeight: 1.65, maxWidth: '580px', margin: '0 auto 28px' }}>
+            Run a free 80-metric AI Visibility audit on your main domain or product documentation URL in under 60 seconds.
           </p>
-          <Link href="/" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #0d9488 0%, #0284c7 100%)', color: '#fff', padding: '14px 32px', borderRadius: '8px', fontWeight: 600, fontSize: '15px', textDecoration: 'none' }}>
-            Free B2B AI Visibility Audit →
-          </Link>
+
+          <AuditInputBlock
+            pageType="B2B"
+            buttonText="Free B2B SaaS Audit →"
+            placeholder="https://your-saas.com"
+            quickPicks={[]}
+            accentGradient="linear-gradient(135deg, #0D9488 0%, #0284C7 100%)"
+            badgeText="INSTANT B2B AUDIT PROBE"
+          />
         </section>
 
         <Footer />

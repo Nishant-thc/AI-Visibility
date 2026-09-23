@@ -1,15 +1,16 @@
 import Link from 'next/link';
 import Footer from '../components/Footer';
+import AuditInputBlock from '../components/AuditInputBlock';
 
 export const metadata = {
-  title: 'AI Visibility for DTC Brands | Will AI Assistants Recommend Your Direct-to-Consumer Products? | The Hub Content',
-  description: 'DTC brands depend on direct discovery. AI assistants are now the new discovery channel — but only for brands that are crawlable, structured, and AI-readable. Run a free AI Visibility audit for your DTC brand.',
+  title: 'AI Visibility for DTC Brands & Shopify Stores | AI Shopping Audit | The Hub Content',
+  description: 'DTC and Shopify brands rely on AI discovery as search shifts to ChatGPT and Perplexity. Audit your DTC store\'s robots.txt, Product JSON-LD schema, and AI crawler accessibility.',
   robots: 'index, follow',
   metadataBase: new URL('https://ai-visibility.thehubcontent.com'),
   alternates: { canonical: '/dtc' },
   openGraph: {
-    title: 'AI Visibility for DTC Brands | The Hub Content',
-    description: 'Is your DTC brand appearing in AI product discovery? Run a free audit to find out.',
+    title: 'AI Visibility for DTC Brands & Shopify Stores | The Hub Content',
+    description: 'See if ChatGPT, Perplexity, and Google AI Overviews can index and cite your Shopify or custom DTC product catalog.',
     url: 'https://ai-visibility.thehubcontent.com/dtc',
     type: 'website',
   },
@@ -17,28 +18,28 @@ export const metadata = {
 
 const faqs = [
   {
-    q: 'Why do DTC brands struggle with AI visibility more than traditional retailers?',
-    a: `DTC brands face a compound AI visibility challenge. First, they operate without the third-party retailer listings (Amazon, Walmart) that traditional brands rely on for AI citation surfaces. Second, DTC websites are typically built on Shopify, Headless commerce, or SPAs (Single Page Applications) that render product content entirely in JavaScript — which most AI crawlers cannot process. Third, DTC brands often have strong social media followings but thin, product-forward websites that lack the editorial depth and semantic structure AI systems need to generate confident citations.`,
+    q: 'Why do Shopify stores often fail AI crawler indexing checks?',
+    a: `Shopify stores frequently experience AI visibility issues due to three factors: (1) default robots.txt setups that restrict crawling of specific collections or search paths; (2) product catalog apps that inject product descriptions via client-side JavaScript, rendering text invisible to AI crawlers; and (3) missing or incomplete JSON-LD Offer and AggregateRating schema on customized theme templates. Running an AI Visibility audit identifies these Shopify-specific bottlenecks immediately.`,
   },
   {
-    q: 'How can a DTC Shopify store improve its AI visibility?',
-    a: `Shopify stores have a specific AI visibility profile. The most impactful improvements for DTC Shopify brands are: (1) Enable Shopify's JSON-LD output (or install a schema app) to add Product, AggregateRating, and Organization markup. (2) Ensure product descriptions are in the server-rendered HTML — avoid product detail pages that load via JavaScript after initial page render. (3) Create a dedicated "About" page with Organization schema defining your brand's mission, founding story, and product categories. (4) Add a blog or editorial section with content that answers the questions your customers ask AI assistants. (5) Configure robots.txt to explicitly allow OAI-SearchBot and PerplexityBot.`,
+    q: 'How do direct-to-consumer (DTC) brands appear in ChatGPT recommendations?',
+    a: `ChatGPT relies on OAI-SearchBot to fetch live product specs, pricing, and availability. For your DTC products to appear in ChatGPT shopping comparisons, your product pages must: (1) explicitly allow OAI-SearchBot in robots.txt; (2) serve product titles, descriptions, and prices in raw HTML; (3) contain valid Schema.org Product and Offer JSON-LD markup; and (4) respond with TTFB under 400ms.`,
   },
   {
-    q: 'What is the impact of AI visibility on DTC customer acquisition cost?',
-    a: `AI visibility is becoming a zero-cost customer acquisition channel for DTC brands. When a consumer asks Perplexity or ChatGPT "What are the best organic protein powders?" and your brand is cited, that discovery costs nothing — unlike paid social or Google Shopping. Early DTC brands investing in AI visibility are building a compounding organic citation channel. The brands that appear in AI answers today are training user expectations about which brands are authoritative in their category. DTC brands that establish AI visibility now will benefit from increasing citation frequency as AI assistant usage grows.`,
+    q: 'What is the role of /llms.txt for DTC store brand positioning?',
+    a: `An /llms.txt file allows DTC brands to control their narrative in AI answer engines. By providing a clean Markdown index of your brand story, core ingredient/material sourcing, sustainability credentials, and top product categories, you give LLMs authoritative, token-efficient context. When consumers ask AI engines about your brand values or product origins, the LLM quotes directly from your /llms.txt file.`,
   },
   {
-    q: 'How do headless commerce and DTC technology stacks affect AI crawler access?',
-    a: `Headless commerce architectures — where a React/Next.js frontend fetches product data from a headless CMS or commerce API — create significant AI visibility risks. In a headless setup, the initial HTML response is typically a minimal shell with JavaScript bundles. The actual product content (name, price, description, images) only renders after client-side JavaScript executes and API calls complete. AI crawlers that don't execute JavaScript — including many versions of PerplexityBot and OAI-SearchBot — receive empty or near-empty pages. The solution is server-side rendering (SSR) or static site generation (SSG) for all product-critical pages.`,
+    q: 'How does Perplexity AI handle Shopify product variants?',
+    a: `PerplexityBot parses product variants by inspecting Schema.org Product markup containing multiple Offer nodes or HasVariant properties. If your store relies entirely on JavaScript dropdowns without updating raw HTML canonicals or JSON-LD arrays, Perplexity will only index the default variant. Providing structured variant data ensures all SKU variations are indexable by AI shopping engines.`,
   },
   {
-    q: 'Should DTC brands invest in AI visibility or traditional SEO first?',
-    a: `For DTC brands with limited resources, AI visibility and traditional SEO are not competing priorities — they share a 70% technical foundation overlap. The structural improvements that help AI crawlers (clean HTML rendering, structured data, fast TTFB, clear semantic content) also improve traditional SEO performance. The differentiating investment for AI visibility is: (1) FAQPage schema answering customer-facing questions, (2) NLP-optimized content structure with natural question-and-answer formats, (3) Explicit AI crawler access rules in robots.txt, and (4) Brand entity schema (Organization, Manufacturer). DTC brands doing both simultaneously get compounding benefit across both channels.`,
+    q: 'Does blocking AI bots protect DTC product designs from image scraping?',
+    a: `Blocking GPTBot or ClaudeBot prevents AI model creators from training on your web text and assets. However, blocking OAI-SearchBot or PerplexityBot will completely erase your DTC store from live conversational search results. To protect IP while maintaining sales channels, block model training bots (GPTBot, ClaudeBot) but explicitly permit live search bots (OAI-SearchBot, PerplexityBot).`,
   },
   {
-    q: 'How do DTC brand subscription models affect AI citation signals?',
-    a: `DTC subscription models introduce an AI visibility complication: subscription-gated content is invisible to AI crawlers. If your subscription brand gates product reviews, community content, or editorial content behind a login, AI crawlers cannot access or index this content. Additionally, if your pricing requires subscription enrollment to display, AI assistants cannot surface your pricing in comparison answers. DTC subscription brands should maintain a robust public content layer — including a public product catalog, editorial blog, and public FAQ — that serves as the AI-crawlable surface of their brand, separate from the subscriber-only content layer.`,
+    q: 'How can DTC brands measure their Generative Engine Optimization (GEO) score?',
+    a: `DTC brands measure GEO using an 80-metric audit evaluating crawler access, Product & Offer JSON-LD completeness, server response speed, Flesch reading ease, and entity linking (sameAs). The THC AI Visibility Auditor scores your store from 0–100 and generates actionable fixes tailored to ecommerce platforms like Shopify, WooCommerce, and BigCommerce.`,
   },
 ];
 
@@ -52,92 +53,107 @@ const schema = {
   })),
 };
 
-export default function DTCLandingPage() {
+export default function DtcLandingPage() {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <div style={{ minHeight: '100vh', background: 'var(--bg, #0d0e12)', color: 'var(--ink, #e8eaf0)', fontFamily: 'var(--font-sans, system-ui)' }}>
+      <div style={{ minHeight: '100vh', background: '#F3F4F7', color: '#14171C', fontFamily: 'var(--font-sans, system-ui)' }}>
 
         {/* ── NAV ─────────────────────────────────────────────────── */}
-        <nav style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: 'rgba(13,14,18,0.92)', backdropFilter: 'blur(12px)', zIndex: 100 }}>
+        <nav style={{ borderBottom: '1px solid #DEE1E7', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: 'rgba(243,244,247,0.95)', backdropFilter: 'blur(12px)', zIndex: 100 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
             <img src="/logo_processed.png" alt="AI Visibility Checker" width={28} height={28} style={{ borderRadius: '50%' }} />
-            <span style={{ fontFamily: 'var(--font-serif, Georgia)', fontWeight: 600, color: '#fff', fontSize: '15px' }}>AI Visibility Checker</span>
+            <span style={{ fontFamily: 'var(--font-serif, Georgia)', fontWeight: 600, color: '#14171C', fontSize: '15px' }}>AI Visibility Checker</span>
           </Link>
-          <Link href="/" style={{ fontSize: '13px', color: 'var(--ink-soft, #8b8fa8)', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.12)', padding: '7px 16px', borderRadius: '6px' }}>
-            ← Run Free Audit
-          </Link>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <Link href="/" style={{ fontSize: '13px', color: '#565E6D', textDecoration: 'none', border: '1px solid #DEE1E7', padding: '7px 16px', borderRadius: '6px', background: '#FFFFFF' }}>
+              Home
+            </Link>
+          </div>
         </nav>
 
         {/* ── HERO ────────────────────────────────────────────────── */}
-        <header style={{ maxWidth: '820px', margin: '0 auto', padding: '80px 24px 60px', textAlign: 'center' }}>
-          <div style={{ display: 'inline-block', background: 'rgba(234,179,8,0.12)', border: '1px solid rgba(234,179,8,0.3)', borderRadius: '20px', padding: '6px 14px', fontSize: '12px', color: '#fbbf24', fontFamily: 'var(--font-mono, monospace)', letterSpacing: '0.08em', marginBottom: '24px' }}>
-            DTC · DIRECT DISCOVERY AUDIT
+        <header style={{ maxWidth: '840px', margin: '0 auto', padding: '60px 24px 40px', textAlign: 'center' }}>
+          <div style={{ display: 'inline-block', background: 'rgba(217, 119, 6, 0.08)', border: '1px solid rgba(217, 119, 6, 0.2)', borderRadius: '20px', padding: '6px 16px', fontSize: '12px', fontWeight: 700, color: '#D97706', fontFamily: 'var(--font-mono, monospace)', letterSpacing: '0.08em', marginBottom: '20px' }}>
+            DTC &amp; SHOPIFY BRANDS · AEO AUDIT
           </div>
-          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)', fontFamily: 'var(--font-serif, Georgia)', fontWeight: 600, lineHeight: 1.15, marginBottom: '20px', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.25rem)', fontFamily: 'var(--font-serif, Georgia)', fontWeight: 600, lineHeight: 1.15, marginBottom: '18px', color: '#14171C', letterSpacing: '-0.02em' }}>
             AI Visibility for<br />
-            <span style={{ background: 'linear-gradient(135deg, #fbbf24 0%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>DTC Brands</span>
+            <span style={{ color: '#D97706' }}>DTC Stores &amp; Shopify Brands</span>
           </h1>
-          <p style={{ fontSize: '18px', color: 'var(--ink-soft, #8b8fa8)', lineHeight: 1.7, maxWidth: '600px', margin: '0 auto 36px' }}>
-            DTC brands built their growth on cutting out the middleman. Now AI assistants are the new discovery layer — and most DTC sites aren't built for them. Find out if yours is.
+          <p style={{ fontSize: '17px', color: '#4B5563', lineHeight: 1.7, maxWidth: '640px', margin: '0 auto 36px' }}>
+            As customer acquisition costs rise, conversational AI search offers a high-intent organic channel. Audit your DTC store to make sure AI shopping assistants recommend your products.
           </p>
-          <Link href="/" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #d97706 0%, #ea580c 100%)', color: '#fff', padding: '14px 32px', borderRadius: '8px', fontWeight: 600, fontSize: '15px', textDecoration: 'none', boxShadow: '0 4px 20px rgba(234,179,8,0.25)' }}>
-            Audit Your DTC Brand Free →
-          </Link>
+
+          {/* Embedded Interactive Audit Form */}
+          <AuditInputBlock
+            pageType="DTC"
+            buttonText="Audit DTC Store Free →"
+            placeholder="https://your-dtc-store.com"
+            quickPicks={['bombas.com', 'awaytravel.com', 'glossier.com', 'liquidiv.com']}
+            accentGradient="linear-gradient(135deg, #D97706 0%, #B45309 100%)"
+            badgeText="DTC AEO AUDIT PROBE"
+          />
         </header>
 
-        {/* ── DTC-SPECIFIC RISKS ──────────────────────────────────── */}
-        <section style={{ maxWidth: '900px', margin: '0 auto', padding: '0 24px 80px' }}>
-          <h2 style={{ textAlign: 'center', fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.6rem', marginBottom: '40px', fontWeight: 600 }}>
-            The DTC AI Visibility Stack
+        {/* ── SIGNALS GRID ────────────────────────────────────────── */}
+        <section style={{ maxWidth: '920px', margin: '0 auto', padding: '20px 24px 60px' }}>
+          <h2 style={{ textAlign: 'center', fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.6rem', marginBottom: '36px', fontWeight: 600, color: '#14171C' }}>
+            Shopify &amp; DTC AI Visibility Essentials
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: '20px' }}>
             {[
-              { icon: '🛒', title: 'Shopify / SPA Rendering', body: 'DTC stores on Shopify or headless platforms often render product data via JavaScript. AI crawlers see empty pages. SSR is required.' },
-              { icon: '🤖', title: 'Explicit Bot Access', body: 'Default server configurations may block all bots. Explicitly allow OAI-SearchBot, PerplexityBot, and Claude-SearchBot in robots.txt.' },
-              { icon: '📦', title: 'Product Schema Depth', body: 'Product JSON-LD with Offer, AggregateRating, and Manufacturer fields tells AI systems what you sell and validates your brand authority.' },
-              { icon: '📝', title: 'Editorial Content Layer', body: 'A blog or editorial section gives AI crawlers semantic context about your brand, ingredients, materials, and use cases.' },
-              { icon: '⭐', title: 'Public Review Surface', body: 'Public-facing reviews with AggregateRating schema are critical for AI inclusion in "best of" product comparison answers.' },
-              { icon: '🧠', title: 'NLP-Optimized Copy', body: 'Product descriptions written in natural language with question-answer formats are more likely to be extracted and cited by LLMs.' },
+              { icon: '🛍️', title: 'Shopify Product Schema', body: 'Ensures Product, Offer, price, and availability JSON-LD nodes exist in initial server response.' },
+              { icon: '🤖', title: 'AI Retrieval Bot Access', body: 'Verifies OAI-SearchBot and PerplexityBot are not accidentally blocked in Shopify robots.txt.' },
+              { icon: '📄', title: 'HTML vs JS Description', body: 'Confirms product descriptions render in server HTML without requiring client JavaScript hydration.' },
+              { icon: '⚡', title: 'Shopify CDN & TTFB', body: 'Measures server response time on Shopify CDN edge servers to prevent bot timeout drop-offs.' },
+              { icon: '📖', title: 'Brand Story Readability', body: 'Evaluates your brand about page and product copy for LLM RAG vector chunking.' },
+              { icon: '🗺️', title: 'Shopify /llms.txt Setup', body: 'Creates a clean Markdown navigation map for LLMs to index product lines without web bloat.' },
             ].map((card) => (
-              <div key={card.title} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '24px' }}>
+              <div key={card.title} style={{ background: '#FFFFFF', border: '1px solid #DEE1E7', borderRadius: '12px', padding: '24px', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
                 <div style={{ fontSize: '28px', marginBottom: '12px' }}>{card.icon}</div>
-                <h3 style={{ fontWeight: 600, fontSize: '15px', marginBottom: '8px', color: '#e8eaf0' }}>{card.title}</h3>
-                <p style={{ fontSize: '13px', color: 'var(--ink-soft, #8b8fa8)', lineHeight: 1.65, margin: 0 }}>{card.body}</p>
+                <h3 style={{ fontWeight: 600, fontSize: '15px', marginBottom: '8px', color: '#14171C' }}>{card.title}</h3>
+                <p style={{ fontSize: '13.5px', color: '#4B5563', lineHeight: 1.65, margin: 0 }}>{card.body}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* ── FAQ SECTION ─────────────────────────────────────────── */}
-        <section style={{ maxWidth: '760px', margin: '0 auto', padding: '0 24px 80px' }}>
-          <h2 style={{ fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.6rem', marginBottom: '40px', fontWeight: 600, textAlign: 'center' }}>
-            DTC AI Visibility: Questions &amp; Answers
+        <section style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px 80px' }}>
+          <h2 style={{ fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.6rem', marginBottom: '36px', fontWeight: 600, textAlign: 'center', color: '#14171C' }}>
+            DTC &amp; Shopify AI Visibility: Questions &amp; Answers
           </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {faqs.map((faq, i) => (
-              <div key={i} style={{ borderLeft: '3px solid rgba(234,179,8,0.4)', paddingLeft: '20px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '10px', color: '#e8eaf0', lineHeight: 1.45 }}>{faq.q}</h3>
-                <p style={{ fontSize: '14px', color: 'var(--ink-soft, #8b8fa8)', lineHeight: 1.75, margin: 0 }}>{faq.a}</p>
+              <div key={i} style={{ background: '#FFFFFF', border: '1px solid #DEE1E7', borderRadius: '12px', padding: '24px', borderLeft: '4px solid #D97706', boxShadow: '0 2px 6px rgba(0,0,0,0.02)' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '10px', color: '#14171C', lineHeight: 1.45 }}>{faq.q}</h3>
+                <p style={{ fontSize: '14px', color: '#374151', lineHeight: 1.75, margin: 0 }}>{faq.a}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* ── CTA BANNER ──────────────────────────────────────────── */}
-        <section style={{ background: 'linear-gradient(135deg, rgba(234,179,8,0.1) 0%, rgba(249,115,22,0.06) 100%)', border: '1px solid rgba(234,179,8,0.2)', borderRadius: '16px', maxWidth: '760px', margin: '0 auto 80px', padding: '48px 32px', textAlign: 'center' }}>
-          <h2 style={{ fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.8rem', fontWeight: 600, marginBottom: '16px' }}>
-            Is Your DTC Brand in the AI Discovery Layer?
+        <section style={{ background: '#FFFFFF', border: '1px solid #DEE1E7', borderRadius: '16px', maxWidth: '800px', margin: '0 auto 80px', padding: '48px 32px', textAlign: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+          <h2 style={{ fontFamily: 'var(--font-serif, Georgia)', fontSize: '1.8rem', fontWeight: 600, marginBottom: '16px', color: '#14171C' }}>
+            Is Your DTC Store AI-Ready?
           </h2>
-          <p style={{ color: 'var(--ink-soft, #8b8fa8)', fontSize: '15px', marginBottom: '28px', lineHeight: 1.65 }}>
-            Run a free audit of any DTC product page, collection page, or brand homepage. See exactly where you stand on 80+ AI visibility metrics.
+          <p style={{ color: '#4B5563', fontSize: '15px', marginBottom: '28px', lineHeight: 1.65, maxWidth: '580px', margin: '0 auto 28px' }}>
+            Run a free 80-metric AI Visibility audit on any Shopify or DTC store URL in under 60 seconds.
           </p>
-          <Link href="/" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #d97706 0%, #ea580c 100%)', color: '#fff', padding: '14px 32px', borderRadius: '8px', fontWeight: 600, fontSize: '15px', textDecoration: 'none' }}>
-            Free DTC AI Visibility Audit →
-          </Link>
+
+          <AuditInputBlock
+            pageType="DTC"
+            buttonText="Free DTC Store Audit →"
+            placeholder="https://your-dtc-store.com"
+            quickPicks={[]}
+            accentGradient="linear-gradient(135deg, #D97706 0%, #B45309 100%)"
+            badgeText="INSTANT DTC AUDIT PROBE"
+          />
         </section>
 
         <Footer />

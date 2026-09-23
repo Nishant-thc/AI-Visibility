@@ -52,24 +52,28 @@ export async function POST(request) {
         if (res.ok) {
           const text = await res.text();
           const locMatches = text.match(/<loc>\s*(.*?)\s*<\/loc>/gi) || [];
-          allLocs = locMatches.map(m => m.replace(/<\/?loc>/gi, '').trim());
+          allLocs = locMatches
+            .map(m => m.replace(/<\/?loc>/gi, '').replace(/<!\[CDATA\[/g, '').replace(/\]\]>/g, '').trim())
+            .filter(u => u.startsWith('http'));
           
-          // If it's a sitemap index, fetch up to 10 child sitemaps to get real URLs
+          // If it's a sitemap index, fetch up to 25 child sitemaps to get real URLs
           if (text.includes('<sitemapindex') && allLocs.length > 0) {
              const childLocsAggr = [];
-             const childUrlsToFetch = allLocs.slice(0, 10);
+             const childUrlsToFetch = allLocs.slice(0, 25);
              
              // Fetch in parallel
              const promises = childUrlsToFetch.map(async (childUrl) => {
                try {
                   const childRes = await fetch(childUrl, { 
                     headers: { 'User-Agent': 'Mozilla/5.0 (compatible; THC-AiVisibilityBot/1.0)' },
-                    signal: AbortSignal.timeout(4000) 
+                    signal: AbortSignal.timeout(5000) 
                   });
                   if (childRes.ok) {
                     const childText = await childRes.text();
                     const childLocs = childText.match(/<loc>\s*(.*?)\s*<\/loc>/gi) || [];
-                    return childLocs.map(m => m.replace(/<\/?loc>/gi, '').trim());
+                    return childLocs
+                      .map(m => m.replace(/<\/?loc>/gi, '').replace(/<!\[CDATA\[/g, '').replace(/\]\]>/g, '').trim())
+                      .filter(u => u.startsWith('http'));
                   }
                } catch(e) {}
                return [];
@@ -80,7 +84,7 @@ export async function POST(request) {
                childLocsAggr.push(...arr);
              });
              
-             if (childLocsAggr.length > 0) allLocs = childLocsAggr;
+             if (childLocsAggr.length > 0) allLocs = Array.from(new Set(childLocsAggr));
           }
           break; 
         }
