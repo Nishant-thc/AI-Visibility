@@ -1168,15 +1168,24 @@ export default function Home() {
   const [checklistFilter, setChecklistFilter] = useState('all');
   const [mobileRailOpen, setMobileRailOpen] = useState(false);
 
-  // Analytics Helpers
+  // Analytics & Auto-scan URL params
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const urlParam = params.get('url');
+      const modeParam = params.get('mode');
+      const pageTypeParam = params.get('pageType');
+      const autoScan = params.get('autoScan') === 'true' || window.location.hash === '#console';
+
+      if (modeParam && (modeParam === 'exact' || modeParam === 'domain')) {
+        setScanMode(modeParam);
+      }
+
       if (urlParam) {
         setUrl(urlParam);
-        if (window.location.hash === '#console') {
-           // We could auto-scan here, but for now just populate
+        if (autoScan) {
+          setView('console');
+          handleScan(urlParam, modeParam || 'exact', pageTypeParam || 'Homepage');
         }
       }
     }
@@ -1208,8 +1217,9 @@ export default function Home() {
   const [compareResults, setCompareResults] = useState([]);
   const [comparing, setComparing] = useState(false);
 
-  const handleScan = async (targetUrl = url) => {
+  const handleScan = async (targetUrl = url, overrideMode = null, overridePageType = null) => {
     const inputUrl = (targetUrl || '').trim();
+    const effectiveScanMode = overrideMode || scanMode;
     if (!inputUrl) {
       setError('Please provide a valid domain or URL.');
       return;
@@ -1220,7 +1230,7 @@ export default function Home() {
     setDomainResults([]);
 
     try {
-      if (scanMode === 'domain') {
+      if (effectiveScanMode === 'domain') {
         setScanStep('1/3 Discovering sitemap and extracting URL types...');
         const discRes = await fetch('/api/discover', {
           method: 'POST',
@@ -1230,7 +1240,7 @@ export default function Home() {
         const discData = await discRes.json();
         if (!discRes.ok || discData.error) throw new Error(discData.error || 'Discovery failed.');
 
-        const urlsToAudit = discData.urls || [{ url: inputUrl, type: 'Homepage' }];
+        const urlsToAudit = discData.urls || [{ url: inputUrl, type: overridePageType || 'Homepage' }];
         const resultsArray = [];
 
         for (let i = 0; i < urlsToAudit.length; i++) {
@@ -1239,11 +1249,11 @@ export default function Home() {
           const auditRes = await fetch('/api/audit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: u.url, deepCrawl: false })
+            body: JSON.stringify({ url: u.url, deepCrawl: false, pageType: u.type })
           });
           const auditData = await auditRes.json();
           if (auditRes.ok && !auditData.error) {
-             auditData.pageType = u.type; // Tag the result
+             auditData.pageType = u.type;
              resultsArray.push(auditData);
           }
         }
@@ -1252,7 +1262,7 @@ export default function Home() {
         
         setScanStep('3/3 Aggregating domain report...');
         setDomainResults(resultsArray);
-        setResult(resultsArray[0]); // Default to first result (homepage)
+        setResult(resultsArray[0]);
         setUrl(inputUrl);
         handleViewChange('console', discData.domain || inputUrl);
         handleNavChange('domain-overview');
@@ -1270,7 +1280,7 @@ export default function Home() {
         const res = await fetch('/api/audit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: inputUrl, deepCrawl })
+          body: JSON.stringify({ url: inputUrl, deepCrawl, pageType: overridePageType })
         });
 
         const data = await res.json();
