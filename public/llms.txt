@@ -1,19 +1,101 @@
 # AI Visibility Checker
-> The ultimate diagnostic instrument measuring whether AI systems can access, parse, understand, and cite your website.
+> The definitive diagnostic instrument that measures whether AI systems can access, parse, understand, and cite your website in real time.
 
 ## About
-AI Visibility Checker is a tool by The Hub Content that audits your website against 80+ metrics tailored for Answer Engine Optimization (AEO). As LLMs and Answer Engines (like ChatGPT Search, Perplexity, and Google AI Overviews) increasingly replace traditional search engines, ensuring your brand's AI Visibility is critical.
+AI Visibility Checker is a free tool by The Hub Content that audits any public website against 80+ metrics designed for Answer Engine Optimization (AEO). As large language models (LLMs) and Answer Engines — including ChatGPT Search, Perplexity, Google AI Overviews, and Claude — increasingly replace traditional search results as the primary information delivery layer, ensuring your brand's AI Visibility is no longer optional. It is a critical business function.
+
+## What is AI Visibility?
+AI Visibility refers to the degree to which a website can be discovered, crawled, parsed, and cited by AI-powered answer engines and large language models. A site with high AI Visibility appears in AI-generated answers, summaries, and citations when users ask relevant questions. A site with low AI Visibility is invisible to AI systems even if it ranks well in traditional search engines.
+
+## What is Answer Engine Optimization (AEO)?
+Answer Engine Optimization (AEO) is the practice of structuring website content so that AI answer engines can extract and surface it as authoritative, cited responses. AEO encompasses technical crawlability for AI bots, structured data (JSON-LD Schema.org), content clarity and readability scores, semantic entity definition, and question-answer content formats. Unlike traditional SEO which targets rankings, AEO targets direct citations in AI-generated answers.
+
+## What Metrics Does This Tool Check?
+The AI Visibility Checker audits your website across four core categories:
+
+### 1. AI Crawler Access
+- robots.txt rules for GPTBot, OAI-SearchBot, ChatGPT-User, Claude-SearchBot, ClaudeBot, PerplexityBot, Bingbot, Google-Extended
+- Paywall and subscription wall detection
+- Login gate detection
+- AI-specific meta tag signals (noai, noimageai)
+
+### 2. Structured Data & Semantic Signals
+- JSON-LD Schema.org presence and type classification
+- @id Knowledge Graph entity mapping
+- FAQPage, HowTo, Article, Organization, Product schema types
+- Open Graph and Twitter Card metadata
+- Canonical URL correctness and self-referencing
+
+### 3. Content Extractability
+- Flesch Reading Ease score (ideal: 60–80 for AI parsing)
+- HTML-to-text ratio (AI crawlers need dense text content)
+- Heading hierarchy (H1/H2/H3 semantic structure)
+- Paragraph count and average length
+- JavaScript dependency — content rendered only in JS is invisible to most AI crawlers
+- Anchor link density for knowledge graph traversal
+- Entity and keyword prominence (NLP-graded)
+
+### 4. Technical Performance
+- Time to First Byte (TTFB) via native HTTP probe
+- Core Web Vitals via Google PageSpeed Insights API
+- Compression (gzip/brotli) for fast crawler retrieval
+- HTTP response status code verification
+- Mobile rendering compatibility
+
+## Who Is This Tool For?
+- **Ecommerce brands** who want product pages and category content cited by AI shopping assistants
+- **B2B companies** whose buyers are asking AI for vendor recommendations
+- **B2C businesses** seeking brand inclusion in AI-generated lifestyle and consumer answers
+- **DTC brands** wanting their products surfaced in AI product comparisons and reviews
+- **Content marketers** measuring the AEO health of editorial content
+- **SEO professionals** adding AI visibility to their technical audit stack
+- **Developers** validating their site's crawlability before and after infrastructure changes
 
 ## Features
-- **Real-time Diagnostic Auditing**: Scans your domain using modern headless scraping infrastructure.
-- **80+ Core Metrics Checked**: From technical latency and paywall schemas to Flesch readability and @id Knowledge Graph mapping.
-- **Crawler Access Control Verification**: Differentiates between model training bots (GPTBot) and live-citation bots (OAI-SearchBot) to protect IP while enabling visibility.
-- **Actionable Reporting**: Provides Markdown and CSV dossier exports with concrete recommendations.
+- **Real-time Diagnostic Auditing**: Scans any domain using modern headless scraping infrastructure
+- **80+ Core Metrics**: From paywall detection and JSON-LD schema validation to Flesch readability and Knowledge Graph mapping
+- **Crawler Access Differentiation**: Distinguishes between model-training bots (GPTBot) and live-citation bots (OAI-SearchBot, Claude-SearchBot) so brands can protect IP while enabling visibility
+- **PageSpeed Insights Integration**: Full Core Web Vitals, filmstrip screenshots, and element-level diagnostics via Google PSI API
+- **Competitor Benchmarking**: Side-by-side AI visibility audit of up to 3 competitor domains
+- **Actionable Export**: Download Markdown, CSV, and JSON audit reports with concrete fix recommendations
+
+## Supported AI Crawlers Tracked
+- GPTBot (OpenAI model training)
+- OAI-SearchBot (ChatGPT live citation indexing)
+- ChatGPT-User (on-demand user-triggered fetch)
+- Claude-SearchBot (Anthropic Claude search retrieval)
+- ClaudeBot (Anthropic general crawl)
+- PerplexityBot (Perplexity AI answer indexing)
+- Bingbot (Microsoft Bing / Copilot indexing)
+- Google-Extended (Gemini training opt-out token)
+- Googlebot (Google Search and AI Overviews)
+
+## Long-Tail Questions This Tool Answers
+- How do I check if ChatGPT can crawl my website?
+- Is my site visible to Perplexity AI?
+- Why is my brand not appearing in AI-generated answers?
+- How do I optimize my website for Google AI Overviews?
+- What is the difference between GPTBot and OAI-SearchBot?
+- How do I add structured data for AI answer engines?
+- What Flesch readability score do AI crawlers prefer?
+- How do I test my robots.txt for AI bots?
+- What is llms.txt and how do I create one?
+- How can I get my ecommerce products cited by AI assistants?
+- What is Answer Engine Optimization (AEO)?
+- How does Claude find and cite websites?
+- Why does my site rank on Google but not appear in ChatGPT?
+
+## Industry-Specific Guidance
+- [AI Visibility for Ecommerce](https://ai-visibility.thehubcontent.com/ecommerce)
+- [AI Visibility for B2B Companies](https://ai-visibility.thehubcontent.com/b2b)
+- [AI Visibility for B2C Businesses](https://ai-visibility.thehubcontent.com/b2c)
+- [AI Visibility for DTC Brands](https://ai-visibility.thehubcontent.com/dtc)
 
 ## Contact & Organization
 - **Publisher**: The Hub Content
 - **Homepage**: https://ai-visibility.thehubcontent.com
 - **Main Organization**: https://thehubcontent.com
+- **Tool Category**: Answer Engine Optimization (AEO) / AI Visibility Audit
 
 ## Usage
-Submit any public URL to our live scanner to receive an instant compliance report graded across Crawler Access, Structured Data, Content Extractability, and Technical Performance.
+Submit any public URL to the live scanner to receive an instant compliance report graded across Crawler Access, Structured Data, Content Extractability, and Technical Performance. No sign-up required. Free to use.

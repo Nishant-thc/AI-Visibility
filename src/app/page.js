@@ -5,6 +5,7 @@ import styles from './page.module.css';
 import CrawlerAccessTab from './components/CrawlerAccessTab';
 import AgenticBrowsingTab from './components/AgenticBrowsingTab';
 import { generateMarkdownReport, generateCsvReport, downloadFile } from '@/utils/exportReport';
+import Footer from './components/Footer';
 
 /* ─── Helpers ─────────────────────────────────────────────────────────── */
 
@@ -1040,6 +1041,110 @@ function LandingPage({ onScan, scanning, scanStep, setView, scanMode, setScanMod
             <div className={styles.personaText}>
               Live user fetch bots (e.g. `ChatGPT-User`) abort requests if TTFB exceeds 8-10 seconds. Sub-800ms TTFB guarantees real-time fetch success when users paste your link.
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= 6. NLP LONG-TAIL AI VISIBILITY FAQ ================= */}
+      <section className={styles.landingSection} id="ai-visibility-faq" style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '60px' }}>
+        <div className={styles.landingSectionHeader}>
+          <span className={styles.landingSectionTag}>AI Visibility Knowledge Base</span>
+          <h2 className={styles.landingSectionTitle}>AI Visibility: Complete Guide</h2>
+          <p className={styles.landingSectionDesc}>
+            Comprehensive answers to the most frequently asked questions about AI Visibility, Answer Engine Optimization, and how to get your brand cited by ChatGPT, Perplexity, and Google AI Overviews.
+          </p>
+        </div>
+
+        <div style={{ maxWidth: '820px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '36px', padding: '0 24px' }}>
+
+          <article style={{ borderLeft: '3px solid rgba(99,102,241,0.5)', paddingLeft: '24px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#e8eaf0', fontFamily: 'var(--font-serif)' }}>
+              What is AI Visibility and why does it matter for my website?
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--ink-soft)', lineHeight: 1.8, margin: 0 }}>
+              AI Visibility is the measurable degree to which a website can be discovered, accessed, parsed, and cited by AI-powered answer engines and large language models (LLMs). Unlike traditional search engine visibility — which is measured by rankings and impressions — AI Visibility is measured by citation frequency: how often your brand, content, or pages appear in AI-generated answers when users ask relevant questions. As platforms like ChatGPT Search, Perplexity AI, Google AI Overviews, and Claude become primary information interfaces, AI Visibility determines whether your brand exists in the answers your potential customers receive — regardless of your traditional search rankings.
+            </p>
+          </article>
+
+          <article style={{ borderLeft: '3px solid rgba(99,102,241,0.5)', paddingLeft: '24px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#e8eaf0', fontFamily: 'var(--font-serif)' }}>
+              What is Answer Engine Optimization (AEO) and how is it different from SEO?
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--ink-soft)', lineHeight: 1.8, margin: 0 }}>
+              Answer Engine Optimization (AEO) is the practice of structuring and optimizing website content so that AI answer engines can extract, understand, and confidently cite it in generated responses. Traditional SEO targets algorithm-scored rankings based on signals like PageRank, keyword density, and backlink profiles. AEO targets a fundamentally different mechanism: LLM retrieval systems that evaluate content based on semantic clarity, structured data richness, crawlability for AI-specific bots, content readability (Flesch scores), and entity disambiguation (Schema.org JSON-LD). A site can rank #1 on Google while being completely invisible to AI answer engines — because the signals that drive each system are different. AEO and SEO share roughly 70% of their technical foundation but diverge significantly in content strategy and structured data implementation.
+            </p>
+          </article>
+
+          <article style={{ borderLeft: '3px solid rgba(99,102,241,0.5)', paddingLeft: '24px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#e8eaf0', fontFamily: 'var(--font-serif)' }}>
+              How do I check if ChatGPT can crawl and index my website?
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--ink-soft)', lineHeight: 1.8, margin: 0 }}>
+              ChatGPT's live web search uses a crawler called OAI-SearchBot. To verify that OAI-SearchBot can access your site, check three things: (1) Your robots.txt file must not disallow OAI-SearchBot — check for rules like <code style={{ fontFamily: 'var(--font-mono)', background: 'rgba(255,255,255,0.06)', padding: '1px 4px', borderRadius: '3px', fontSize: '12px' }}>User-agent: OAI-SearchBot / Disallow: /</code> which would block ChatGPT entirely. (2) Your page must not have a <code style={{ fontFamily: 'var(--font-mono)', background: 'rgba(255,255,255,0.06)', padding: '1px 4px', borderRadius: '3px', fontSize: '12px' }}>{'<meta name="robots" content="noindex">'}</code> or <code style={{ fontFamily: 'var(--font-mono)', background: 'rgba(255,255,255,0.06)', padding: '1px 4px', borderRadius: '3px', fontSize: '12px' }}>{'<meta name="ai" content="noai">'}</code> tag. (3) Your page must return a 200 HTTP status and load without requiring authentication. Separately, GPTBot is OpenAI's model training crawler — blocking it does not prevent ChatGPT's live web search citations, which run exclusively through OAI-SearchBot. This tool audits both crawlers in a single scan.
+            </p>
+          </article>
+
+          <article style={{ borderLeft: '3px solid rgba(99,102,241,0.5)', paddingLeft: '24px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#e8eaf0', fontFamily: 'var(--font-serif)' }}>
+              What is llms.txt and should my website have one?
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--ink-soft)', lineHeight: 1.8, margin: 0 }}>
+              The <code style={{ fontFamily: 'var(--font-mono)', background: 'rgba(255,255,255,0.06)', padding: '1px 4px', borderRadius: '3px', fontSize: '12px' }}>llms.txt</code> file is an emerging open standard (analogous to robots.txt) that provides a structured Markdown document at <code style={{ fontFamily: 'var(--font-mono)', background: 'rgba(255,255,255,0.06)', padding: '1px 4px', borderRadius: '3px', fontSize: '12px' }}>/llms.txt</code> to guide large language models in understanding your website's structure, purpose, and key content. Unlike robots.txt which communicates access rules, llms.txt communicates semantic context: what your site is about, what pages contain authoritative information, and how AI models should represent your brand. A well-crafted llms.txt can reduce LLM token consumption for your site by up to 80% (by providing efficient Markdown instead of full HTML pages) and improve the accuracy and confidence with which AI systems describe your brand. Early adopters of llms.txt in their category gain a structural advantage in AI citation quality and frequency.
+            </p>
+          </article>
+
+          <article style={{ borderLeft: '3px solid rgba(99,102,241,0.5)', paddingLeft: '24px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#e8eaf0', fontFamily: 'var(--font-serif)' }}>
+              Why does my site rank on Google but not appear in Perplexity or ChatGPT answers?
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--ink-soft)', lineHeight: 1.8, margin: 0 }}>
+              Google Search and AI answer engines evaluate content through fundamentally different lenses. Google's algorithm rewards domain authority, link equity, and keyword relevance. AI answer engines reward: (1) Content clarity — Perplexity and ChatGPT prefer content with Flesch Reading Ease scores of 60-80, meaning clear, conversational prose over dense, technical writing. (2) Structured data — pages with JSON-LD Schema.org markup are significantly more likely to be cited because AI systems can extract structured facts, not just raw text. (3) Raw HTML availability — if your content loads via JavaScript after initial page render, most AI crawlers never see it. (4) Direct question-answer format — pages that explicitly answer the questions users are asking (especially with FAQPage schema) are preferred over pages optimized for keyword density. Many high-ranking Google pages fail all four of these AI-specific criteria simultaneously.
+            </p>
+          </article>
+
+          <article style={{ borderLeft: '3px solid rgba(99,102,241,0.5)', paddingLeft: '24px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#e8eaf0', fontFamily: 'var(--font-serif)' }}>
+              What is the difference between GPTBot, OAI-SearchBot, and ChatGPT-User?
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--ink-soft)', lineHeight: 1.8, margin: 0 }}>
+              These three OpenAI crawlers serve entirely different purposes and blocking one does not affect the others. <strong style={{ color: '#e8eaf0' }}>GPTBot</strong> is OpenAI's model training crawler — it scrapes web content to train future versions of GPT foundation models. Blocking GPTBot prevents your content from appearing in OpenAI's training datasets but has zero effect on ChatGPT's ability to cite your pages in live answers. <strong style={{ color: '#e8eaf0' }}>OAI-SearchBot</strong> is OpenAI's live search indexing crawler — it builds and maintains the real-time index that ChatGPT's web search (SearchGPT) uses to cite sources in answers. Blocking OAI-SearchBot completely removes your site from ChatGPT's live citation capabilities. <strong style={{ color: '#e8eaf0' }}>ChatGPT-User</strong> is triggered on-demand when a user pastes or references a specific URL directly inside a ChatGPT conversation — it performs a single live fetch of that URL regardless of training opt-outs. Understanding this distinction is essential: most brands that block GPTBot to protect their IP unknowingly also block OAI-SearchBot with wildcard rules, eliminating their AI search citation entirely.
+            </p>
+          </article>
+
+          <article style={{ borderLeft: '3px solid rgba(99,102,241,0.5)', paddingLeft: '24px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#e8eaf0', fontFamily: 'var(--font-serif)' }}>
+              How does structured data (Schema.org JSON-LD) improve AI visibility?
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--ink-soft)', lineHeight: 1.8, margin: 0 }}>
+              Schema.org structured data provides machine-readable facts about your content that AI systems can extract with high confidence — eliminating the need for AI to infer information from prose. For AI citation purposes, the most impactful schema types are: <strong style={{ color: '#e8eaf0' }}>Organization</strong> (establishes your brand identity, industry, and entity graph node), <strong style={{ color: '#e8eaf0' }}>FAQPage</strong> (directly feeds question-answer pairs to AI assistants), <strong style={{ color: '#e8eaf0' }}>Article</strong> with datePublished and author (enables AI systems to evaluate content freshness and authorship authority), <strong style={{ color: '#e8eaf0' }}>Product</strong> (for ecommerce and SaaS citations in shopping and software comparisons), and <strong style={{ color: '#e8eaf0' }}>HowTo</strong> (generates step-by-step answer extractions for procedural queries). The <code style={{ fontFamily: 'var(--font-mono)', background: 'rgba(255,255,255,0.06)', padding: '1px 4px', borderRadius: '3px', fontSize: '12px' }}>@id</code> property within JSON-LD is particularly important for AI disambiguation — it anchors your entity to a canonical URL in the knowledge graph, preventing AI systems from confusing your brand with similarly-named entities.
+            </p>
+          </article>
+
+          <article style={{ borderLeft: '3px solid rgba(99,102,241,0.5)', paddingLeft: '24px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#e8eaf0', fontFamily: 'var(--font-serif)' }}>
+              How can I optimize my website for Google AI Overviews?
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--ink-soft)', lineHeight: 1.8, margin: 0 }}>
+              Google AI Overviews are generated by Gemini models that synthesize information from multiple web sources in real time. To optimize for inclusion: (1) Maintain strong traditional SEO signals — Google AI Overviews primarily draw from pages that are already indexed and performing well in Google Search. (2) Use clear, declarative sentence structures that directly answer questions in the first 1-2 sentences of paragraphs — AI Overviews extract "answer units" that are self-contained and quotable. (3) Implement Article schema with <code style={{ fontFamily: 'var(--font-mono)', background: 'rgba(255,255,255,0.06)', padding: '1px 4px', borderRadius: '3px', fontSize: '12px' }}>dateModified</code> to signal content freshness, since AI Overviews favor recently updated, authoritative sources. (4) Use the Google-Extended user-agent to control whether your content trains Gemini models — note that blocking Google-Extended may affect your inclusion in AI Overviews. (5) Build E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) signals through author biographies, publication dates, citations, and expert review attributions.
+            </p>
+          </article>
+
+        </div>
+
+        {/* Industry deep-links */}
+        <div style={{ maxWidth: '820px', margin: '48px auto 0', padding: '0 24px' }}>
+          <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-faint)', marginBottom: '16px' }}>AI Visibility by Industry</div>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            {[
+              { label: '🛍️ Ecommerce', href: '/ecommerce' },
+              { label: '🏢 B2B', href: '/b2b' },
+              { label: '🎯 B2C', href: '/b2c' },
+              { label: '📦 DTC Brands', href: '/dtc' },
+            ].map(l => (
+              <a key={l.href} href={l.href} style={{ display: 'inline-block', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '10px 18px', fontSize: '13px', color: 'var(--ink-soft)', textDecoration: 'none', transition: 'all 0.15s' }}>
+                {l.label}
+              </a>
+            ))}
           </div>
         </div>
       </section>
@@ -2368,12 +2473,7 @@ export default function Home() {
     </div>
     )}
 
-      <footer style={{ textAlign: 'center', padding: '40px 20px', fontSize: '13px', color: 'var(--ink-soft)', borderTop: '1px solid var(--line)', background: 'var(--bg)' }}>
-        <div style={{ marginBottom: '16px' }}>
-          <a href="/glossary" style={{ color: 'var(--ink)', textDecoration: 'none', fontWeight: 600 }}>Glossary / Knowledgebase</a>
-        </div>
-        Built by <a href="https://thehubcontent.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--ink)', fontWeight: 600, textDecoration: 'none', borderBottom: '1px solid var(--ink)' }}>The Hub Content</a>
-      </footer>
+      <Footer />
     </div>
   );
 }
